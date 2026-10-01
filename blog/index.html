@@ -1,0 +1,882 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <title>Jagannath Subramanya — notes on mobile core networks</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+      <script>(function(){
+var D=document.documentElement;
+try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
+function cur(){var a=D.getAttribute('data-theme');if(a)return a;
+return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+document.addEventListener('DOMContentLoaded',function(){
+var host=document.querySelector('.header-inner')||document.querySelector('#sidebar .inner')
+||document.querySelector('#header nav.links')||document.querySelector('#header');
+if(!host||host.querySelector('.theme-toggle'))return;
+var b=document.createElement('button');
+b.type='button';b.className='theme-toggle';
+b.innerHTML='<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>'
++'<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+function sync(){var c=cur();b.setAttribute('aria-label',c==='dark'?'Switch to light theme':'Switch to dark theme');
+b.setAttribute('title',b.getAttribute('aria-label'));}
+sync();
+b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
+D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
+host.appendChild(b);});})();</script>
+  </head>
+  <body class="is-preload">
+    <div id="wrapper">
+      <header id="header">
+        <h1><a href="index.html">Jagannath Subramanya</a></h1>
+        <nav class="links"><ul>
+          <li><a href="#" data-filter="all">All</a></li>
+          <li><a href='#' data-filter='other'>Other (8)</a></li>
+          <li><a href='#' data-filter='automation'>Automation (2)</a></li>
+          <li><a href='#' data-filter='devops'>Devops (13)</a></li>
+          <li><a href='#' data-filter='infra'>Infra (20)</a></li>
+          <li><a href='#' data-filter='containers'>Containers (8)</a></li>
+          <li><a href='#' data-filter='telecom'>Telecom (8)</a></li>
+          <li><a href='#' data-filter='monitoring'>Monitoring (11)</a></li>
+          <li><a href='#' data-filter='security'>Security (1)</a></li>
+
+        </ul></nav>
+      </header>
+      <div id="main">
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/api-integration-blog.html">Modern API Integration: Building Secure Network Management Tools</a></h2><p>In today's cloud-native infrastructure landscape, standalone tools are islands of limited utility. Real operational power comes from seamlessly integrating with existing systems—IPAM databases, monitoring platforms, configuration management systems, and identity providers. The challenge lies in building these integrations securely, reliably, and maintainably.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/api-integration-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="automation">
+          <header>
+            <div class="title"><h2><a href="posts/automation-iac-blog.html">Infrastructure as Code in Telecommunications: Automating Complex Network Configurations at Scale</a></h2><p>In telecommunications infrastructure, manual configuration management is not just inefficient—it's dangerous. A single misconfigured IP address or routing rule can disrupt service for thousands of customers. Over the past year, I've implemented comprehensive Infrastructure as Code (IaC) practices for managing complex telecommunications infrastructure across multiple AWS regions, handling hundreds of network configurations through automated deployment pipelines. This experience has highlighted both the tremendous benefits and unique challenges of applying IaC principles to telecommunications infrastructure.</p></div>
+            <div class="meta"><span class="published">Automation</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/automation-iac-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Automation</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="automation">
+          <header>
+            <div class="title"><h2><a href="posts/automation-tools-blog.html">Building Developer-Friendly Automation Tools: From PCAP Collection to Configuration Management</a></h2><p>Modern infrastructure operations demand sophisticated automation tools that are both powerful and developer-friendly. The key to successful automation lies in building tools that solve real problems while being intuitive enough for daily use by operations teams.</p></div>
+            <div class="meta"><span class="published">Automation</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/automation-tools-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Automation</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/bug-fixing-blog.html">Debugging Segmentation Faults: A Case Study in Network Interface Enumeration</a></h2><p>Sometimes the most critical bugs are the ones hiding in plain sight. Recently, while integrating gtping (a GTP ping tool) into our monitoring infrastructure, we encountered intermittent segmentation faults that threatened the stability of our wireless network monitoring. This post walks through the debugging process and the simple yet crucial fix that resolved the issue.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/bug-fixing-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/carrier-integration-blog.html">Mastering Telecommunications Carrier Integration: A Deep Dive into DRA and Multi-Carrier Network Architecture</a></h2><p>In the telecommunications industry, carrier integration represents one of the most complex and critical aspects of network infrastructure. Unlike typical API integrations in software development, carrier integration involves real-time protocol routing, regulatory compliance, and mission-critical reliability requirements. Over the past year, I've led multiple carrier integration projects involving major telecommunications providers including Partner A, Partner B, Partner D, and Partner C, providing hands-on insights into the challenges and best practices of modern carrier integration.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/carrier-integration-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/cicd-automation-blog.html">Automating Critical Infrastructure Monitoring with GitHub Actions: A Telecommunications Case Study</a></h2><p>In the fast-paced world of telecommunications infrastructure, maintaining service availability depends heavily on proactive monitoring and automation. When managing thousands of wireless SIM cards and MSISDN (Mobile Station International Subscriber Directory Number) allocations, manual monitoring becomes not just inefficient—it becomes a liability.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/cicd-automation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/cicd-pipeline-blog-2.html">Building Rock-Solid CI/CD Pipelines for Mission-Critical Telecommunications Infrastructure</a></h2><p>When your code powers voice calls for millions of users, there's no room for deployment failures. Recently, I designed and implemented a comprehensive CI/CD pipeline for a production VoLTE IMS (IP Multimedia Subsystem) that required the highest levels of reliability, security, and performance.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/cicd-pipeline-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/cicd-pipeline-blog-3.html">Building Robust CI/CD Pipelines for Network Infrastructure Services</a></h2><p>In telecommunications and network infrastructure, reliability isn't just important—it's mission-critical. When DNS services go down, entire network segments become unreachable. This post explores building CI/CD pipelines specifically designed for network infrastructure services, with a focus on automated testing, security, and zero-downtime deployments.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/cicd-pipeline-blog-3.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/cicd-pipeline-blog.html">Modern CI/CD Pipeline Architecture: Jenkins-Based Docker Containerization for Telecom Infrastructure</a></h2><p>In the rapidly evolving landscape of telecommunications infrastructure, the ability to rapidly and reliably deploy network services has become a critical competitive advantage. The implementation of robust CI/CD (Continuous Integration/Continuous Deployment) pipelines for containerized applications represents the backbone of modern DevOps practices in telecom environments.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/cicd-pipeline-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/cloud-infrastructure-blog.html">Managing Multi-Region Cloud Infrastructure: Lessons from AWS Operations at Scale</a></h2><p>Operating cloud infrastructure across multiple regions presents unique challenges in monitoring, cost optimization, and performance management. As organizations scale globally, the need for comprehensive tooling to manage distributed AWS resources becomes critical.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/cloud-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/container-architecture-blog.html">Building a Hybrid DNS-Routing Container: Combining FRR and CoreDNS for Telecom Infrastructure</a></h2><p>In the ever-evolving landscape of telecom infrastructure, the need for specialized, high-performance DNS solutions that can seamlessly integrate with routing protocols has become paramount. Recently, I had the opportunity to architect and implement a hybrid container solution that combines Free Range Routing (FRR) with CoreDNS to create a powerful, scalable DNS service for wireless APN (Access Point Name) management.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/container-architecture-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/container-networking-dns-blog.html">Solving Complex Container Networking: DNS Resolution in Multi-Network Environments</a></h2><p>During the deployment of our telecommunications DRA infrastructure, we encountered a critical issue that stumped our team for days. Our containers, which needed to connect to multiple networks simultaneously, were experiencing DNS resolution failures despite using Docker's standard `--dns` option. This seemingly simple networking issue was blocking our entire production deployment.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/container-networking-dns-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/containerization-blog.html">Containerizing Critical VoLTE Infrastructure: Lessons from Production IMS Deployment</a></h2><p>Containerization has revolutionized how we deploy and manage applications, but applying these principles to mission-critical telecommunications infrastructure presents unique challenges. Recently, I led the containerization of a production VoLTE IMS (IP Multimedia Subsystem) that serves millions of voice calls daily.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/containerization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/containerization-strategy-blog.html">Containerizing Legacy Telecommunications Infrastructure: A Strategic Approach</a></h2><p>Containerization has revolutionized application deployment across most industries, but telecommunications infrastructure presents unique challenges that require specialized approaches. During the development of the project project, I faced the complex task of containerizing legacy telecommunications software (the OSMO stack) while maintaining carrier-grade performance, reliability, and real-time characteristics.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/containerization-strategy-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/coredns-custom-implementation-blog.html">Building Custom CoreDNS Solutions for Enterprise Infrastructure</a></h2><p>CoreDNS has revolutionized DNS services with its plugin-based architecture and cloud-native design. However, enterprise environments often require specialized configurations that go beyond standard deployments. In this post, I'll walk through implementing a custom CoreDNS solution designed specifically for wireless infrastructure, focusing on Private PGW (Packet Gateway) environments.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/coredns-custom-implementation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/data-migration-blog.html">From Manual Chaos to Automated Excellence: A Data Migration Success Story</a></h2><p>Data migration projects are often viewed as necessary evils—complex, risky undertakings that organizations approach with trepidation. However, when executed with proper planning and modern methodologies, data migrations can become transformation catalysts that revolutionize operations. This blog post chronicles a comprehensive data migration project that transformed SIM OTA management from a manual, error-prone process to a fully automated, scalable system.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/data-migration-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-blog-2.html">DevOps Automation in Telecommunications: Building Self-Healing Infrastructure at Scale</a></h2><p>In the fast-paced world of telecommunications, where network downtime can cost millions and affect millions of subscribers, traditional manual deployment and operations processes simply cannot keep pace with business demands. Over the past two years, I've been architecting and implementing comprehensive DevOps automation solutions that have transformed how we deploy, monitor, and maintain critical telecommunications infrastructure.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-blog-3.html">DevOps Automation in Telecommunications: Building Resilient Monitoring Workflows with GitHub Actions</a></h2><p>The intersection of DevOps practices and telecommunications infrastructure presents unique challenges and opportunities. This blog post explores how to design and implement robust automation workflows for telecom infrastructure monitoring, using GitHub Actions as the foundation for reliable, scalable monitoring systems.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-blog-3.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-blog-4.html">Building CI/CD Pipelines for Specialized Monitoring Tools: A DevOps Case Study</a></h2><p>When developing specialized monitoring tools like wireless network probes, traditional deployment approaches often fall short. This post explores how we built a comprehensive CI/CD pipeline for a custom network monitoring solution, focusing on automation, reliability, and scalability. We'll dive into the challenges of deploying infrastructure tools and the DevOps patterns that made our deployment seamless.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-blog-4.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-blog-5.html">Building Robust CI/CD Pipelines for Telecommunications Infrastructure</a></h2><p>In the fast-paced world of telecommunications, deploying critical infrastructure like Signal Transfer Points (STPs) requires bulletproof automation. During my recent work on the project project, I had the opportunity to design and implement a comprehensive DevOps pipeline that handles complex multi-service deployments across different carrier environments. This blog post shares the challenges, solutions, and lessons learned from building production-ready CI/CD pipelines for telecom infrastructure.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-blog-5.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-blog.html">Infrastructure as Code in Telecommunications: Scaling DevOps for Mission-Critical Networks</a></h2><p>In the telecommunications industry, where 99.999% uptime is not just a goal but a regulatory requirement, traditional manual deployment processes pose unacceptable risks. The complexity of modern telecom networks, spanning multiple data centers, cloud regions, and service providers, demands a sophisticated approach to infrastructure management.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-automation-telecom.html">DevOps Automation in Telecom: SIM and EPC</a></h2><p>Practical automation approaches for SIM tooling and EPC workflows.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-automation-telecom.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-best-practices-blog.html">DevOps Excellence: Infrastructure-as-Code for Monitoring Systems</a></h2><p>In the realm of infrastructure monitoring, configuration drift and manual changes are reliability killers. This blog explores how treating monitoring configurations as code transforms operational excellence, drawing from real-world experience managing wireless infrastructure alerts at scale.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-best-practices-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-secrets-management-blog.html">DevOps Security: From Hardcoded Secrets to Vault Integration</a></h2><p>One of the most critical aspects of production deployment is secure secrets management. This post chronicles the journey from hardcoded credentials to a production-ready Vault integration, highlighting the security improvements and operational benefits achieved.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-secrets-management-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="devops">
+          <header>
+            <div class="title"><h2><a href="posts/devops-sre-blog.html">DevOps and SRE: Building Reliable Systems Through Production Engineering</a></h2><p>Site Reliability Engineering (SRE) and DevOps practices are often discussed in theory, but the real learning happens when you're managing production systems at scale. Over the past year, I've been deeply involved in production engineering work that embodies core SRE principles: automation, monitoring, incident response, and continuous improvement. This hands-on experience has taught me what it really means to build and maintain reliable systems.</p></div>
+            <div class="meta"><span class="published">DevOps</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/devops-sre-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">DevOps</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/diameter-protocol-implementation-blog.html">Deep Dive into Diameter Protocol Implementation: Building Robust Telecommunications Messaging</a></h2><p>The Diameter protocol serves as the nervous system of modern telecommunications networks, carrying authentication, authorization, and accounting (AAA) messages that enable everything from voice calls to mobile internet access. During my work on telecommunications infrastructure, I implemented comprehensive Diameter protocol solutions that process hundreds of thousands of messages daily, ensuring seamless connectivity for millions of mobile subscribers worldwide.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/diameter-protocol-implementation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/docker-containerization-blog.html">Mastering Multi-Stage Docker Builds: Extending CloudProber with Custom Tools</a></h2><p>In the world of containerized applications, optimizing Docker images for both functionality and size is crucial. Recently, I worked on a project that perfectly demonstrates this principle: extending CloudProber with GTP (GPRS Tunneling Protocol) ping capabilities. This post explores how multi-stage Docker builds enabled us to create a lean, powerful monitoring tool.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/docker-containerization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/docker-infrastructure-blog.html">Containerizing DNS Services: Docker Infrastructure for Enterprise Networks</a></h2><p>In today's cloud-native landscape, containerization has become the standard for deploying network services. However, when it comes to critical infrastructure like DNS services, the approach requires careful consideration of performance, reliability, and integration requirements. This post explores building Docker infrastructure specifically for DNS services in enterprise telecommunications environments.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/docker-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/dra-infrastructure-blog.html">Modernizing Diameter Routing Agent (DRA) Infrastructure: A Journey from Monolith to Microservices</a></h2><p>In today's rapidly evolving telecommunications landscape, the Diameter Routing Agent (DRA) serves as a critical component in 4G/5G networks, managing signaling traffic between network functions. Over the past year, I led a comprehensive modernization initiative that transformed our DRA infrastructure from a monolithic, manually-managed system to a containerized, multi-provider microservices architecture.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/dra-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/elixir-deployment-blog.html">Production-Ready Elixir: Modern Deployment Strategies for Phoenix Applications</a></h2><p>Elixir and Phoenix have proven themselves as powerful tools for building fault-tolerant, scalable applications. However, deploying Elixir applications to production requires careful consideration of infrastructure, monitoring, and operational practices. This blog post details the journey of deploying a complex Elixir-based wireless network analysis service to production, covering modern deployment strategies, infrastructure patterns, and lessons learned.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/elixir-deployment-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/ims-architecture-blog.html">Modernizing VoLTE IMS Architecture: From Monolith to Cloud-Native Microservices</a></h2><p>The evolution of Voice over LTE (VoLTE) has transformed how telecommunications networks handle voice communications. At the heart of this transformation lies the IMS (IP Multimedia Subsystem), a complex architecture that enables rich communication services over IP networks.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/ims-architecture-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/ims-infrastructure-blog.html">Modernizing IMS Infrastructure: From Legacy Systems to Cloud-Native Excellence</a></h2><p>The IP Multimedia Subsystem (IMS) represents the backbone of modern telecommunications, enabling everything from voice calls to video conferencing, messaging, and rich communication services. As telecommunications providers transition from legacy circuit-switched networks to all-IP infrastructure, the challenge of modernizing IMS components while maintaining service continuity becomes paramount.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/ims-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/ims-modernization-blog.html">IMS Service Modernization: Transforming IP Multimedia Subsystem for Cloud-Native Networks</a></h2><p>The IP Multimedia Subsystem (IMS) represents the backbone of modern telecommunications, enabling voice, video, and multimedia services over IP networks. As networks evolve toward 5G and cloud-native architectures, legacy IMS implementations face scalability, maintainability, and operational challenges that demand comprehensive modernization.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/ims-modernization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-as-code-blog-2.html">Infrastructure as Code for Telecommunications: Automating Complex Deployments</a></h2><p>In the rapidly evolving telecommunications landscape, managing infrastructure through traditional manual processes creates bottlenecks that hinder innovation and increase operational risk. This blog post explores how Infrastructure as Code (IaC) principles can transform telecommunications deployment workflows, using a comprehensive SIM OTA management system as a case study.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-as-code-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-as-code-blog.html">Infrastructure as Code: Scaling Kubernetes Deployments with Helm and GitOps</a></h2><p>Infrastructure as Code (IaC) has transformed how we manage complex systems, but implementing it effectively at scale requires more than just writing YAML files. Over the past year, I've been working with a sophisticated IaC setup that manages Prometheus monitoring infrastructure across multiple datacenters and environments. This experience has taught me invaluable lessons about building maintainable, scalable, and reliable infrastructure automation.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-as-code-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-automation-blog-2.html">Infrastructure Automation at Scale: Cross-Platform Deployment in Telecommunications</a></h2><p>In the fast-paced world of telecommunications infrastructure, manual deployment processes are the enemy of reliability and speed. When you're managing network tools across dozens of servers spanning multiple geographic regions and hardware architectures, automation isn't just a convenience—it's a necessity.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-automation-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-automation-blog.html">Building Production-Scale Telecommunications Infrastructure: A Deep Dive into EPC Automation</a></h2><p>*How I automated the deployment and management of a multi-region 5G core network infrastructure using project, Docker, and Python*</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-automation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-modernization-blog.html">Infrastructure Modernization: From Legacy DNS to Cloud-Native Solutions in Telecom</a></h2><p>In the fast-paced world of telecommunications, legacy infrastructure can quickly become a bottleneck to innovation and operational efficiency. Recently, I led an infrastructure modernization project that transformed our approach to DNS services for wireless APN (Access Point Name) management, replacing aging Partner D DNS containers with a modern, cloud-native solution.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-modernization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-pipeline-migration-blog.html">Modernizing DevOps: A Complete Infrastructure Pipeline Migration Story</a></h2><p>In the rapidly evolving world of telecommunications, maintaining efficient and scalable infrastructure is crucial for delivering reliable services. This blog post chronicles a comprehensive infrastructure pipeline migration project that transformed a specialized wireless PCAP extraction service from legacy telephony-specific deployments to modern, standardized CI/CD pipelines.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-pipeline-migration-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-reliability-blog.html">Infrastructure Reliability Engineering: Building Bulletproof Wireless Systems</a></h2><p>In the telecommunications industry, "five nines" (99.999% uptime) isn't just a goal—it's a necessity. This translates to less than 5.26 minutes of downtime per year. Achieving this level of reliability requires a fundamental shift from reactive incident response to proactive reliability engineering. This blog explores how we built bulletproof monitoring for critical wireless infrastructure components at .</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-reliability-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/infrastructure-scaling-blog.html">Scaling Telecommunications Infrastructure: Lessons from Managing Multi-Region Network Expansions</a></h2><p>In today's rapidly evolving telecommunications landscape, the ability to scale infrastructure efficiently and reliably is crucial for service providers. Over the past year, I've been deeply involved in managing large-scale network infrastructure expansions across multiple AWS regions for the operator's cloud router setup. This experience has provided valuable insights into the challenges and best practices of scaling telecommunications infrastructure at enterprise scale.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/infrastructure-scaling-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/kubernetes-deployment-blog-2.html">From Kubernetes to CI Pipeline: A Strategic Infrastructure Migration</a></h2><p>Sometimes the most important architectural decisions are the ones that go against conventional wisdom. This post chronicles a strategic decision to migrate from Kubernetes deployment to CI pipeline-based deployment, the reasoning behind it, and the lessons learned.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/kubernetes-deployment-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="containers">
+          <header>
+            <div class="title"><h2><a href="posts/kubernetes-deployment-blog.html">Scaling Telecommunications Infrastructure: A Journey Through Kubernetes Deployments in Wireless Networks</a></h2><p>In today's rapidly evolving telecommunications landscape, the ability to deploy, scale, and manage wireless infrastructure services efficiently has become paramount. Over the past two years, I've had the privilege of architecting and implementing comprehensive Kubernetes deployment strategies for critical wireless infrastructure components, managing over 40+ deployments across multiple regions and services.</p></div>
+            <div class="meta"><span class="published">Containers</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/kubernetes-deployment-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Containers</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/legacy-modernization-blog.html">Taming Technical Debt: A Strategic Approach to Legacy System Modernization</a></h2><p>Legacy systems are the silent workhorses of many organizations—reliable, battle-tested, but increasingly difficult to maintain and extend. This blog post chronicles the modernization journey of a critical telecommunications service that successfully evolved from a telephony-specific legacy system to a modern, maintainable wireless network analysis platform.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/legacy-modernization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/monitoring-observability-blog-2.html">Building Resilient Monitoring Systems: Lessons from Managing Wireless Infrastructure Alerts</a></h2><p>In today's hyper-connected world, wireless infrastructure forms the backbone of critical communications. At a mobile operator, managing thousands of alerts across multiple environments while ensuring zero false positives is both an art and a science. This blog explores the journey of building and optimizing a robust monitoring system for wireless infrastructure.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/monitoring-observability-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/monitoring-observability-blog.html">Building Production-Grade Monitoring: Lessons from Managing Enterprise Prometheus Infrastructure</a></h2><p>In today's cloud-native landscape, observability isn't just a nice-to-have—it's mission-critical. Over the past year, I've had the opportunity to work extensively with Prometheus infrastructure at scale, managing monitoring solutions across multiple datacenters and environments. This experience has taught me valuable lessons about building resilient, scalable monitoring systems that can handle real-world production demands.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/monitoring-observability-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/monorepo-microservices-blog.html">Transforming Monolithic VoLTE Systems: A Journey from Single Container to Microservices Architecture</a></h2><p>In the rapidly evolving telecommunications landscape, the need for scalable, maintainable, and efficient systems has never been more critical. Recently, I undertook a comprehensive transformation of a VoLTE (Voice over LTE) IMS (IP Multimedia Subsystem) infrastructure, migrating from a monolithic single-container deployment to a modern microservices architecture using a monorepo approach.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/monorepo-microservices-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/multi-region-networking-blog.html">Multi-Region Network Architecture: Building Resilient Telecommunications Infrastructure Across Global AWS Regions</a></h2><p>In today's interconnected world, telecommunications services must operate seamlessly across multiple geographic regions while maintaining high availability, low latency, and regulatory compliance. Over the past year, I've architected and managed a complex multi-region network infrastructure spanning six AWS regions across three continents, supporting both telephony and wireless services for a global telecommunications provider. This experience has provided deep insights into the challenges and best practices of multi-region network design at enterprise scale.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/multi-region-networking-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/network-engineering-blog.html">Advanced Network Engineering: Integrating BGP Routing with DNS Services for Telecom Infrastructure</a></h2><p>The convergence of routing protocols and application services represents one of the most challenging aspects of modern network engineering. In telecommunications infrastructure, the need to seamlessly integrate BGP (Border Gateway Protocol) routing with DNS services creates unique technical challenges that require deep understanding of both Layer 3 routing and Layer 7 application protocols.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-engineering-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/network-monitoring-blog-2.html">Building a Scalable Network Monitoring Solution: From WHOIS to Cloudprober</a></h2><p>Network monitoring is the backbone of reliable infrastructure operations. In today's distributed systems landscape, the ability to automatically generate monitoring configurations and scale network probes across global regions is crucial for maintaining service reliability and performance visibility.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-monitoring-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/network-monitoring-blog-3.html">Beyond ICMP: Extending Network Monitoring with GTP Protocol Support</a></h2><p>Network monitoring has evolved significantly beyond simple ping tests. In modern telecommunications infrastructure, particularly wireless networks, traditional ICMP ping often falls short of providing meaningful insights. This post explores how we extended CloudProber, a powerful network monitoring tool, with GTP (GPRS Tunneling Protocol) capabilities to better monitor wireless infrastructure.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-monitoring-blog-3.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/network-monitoring-blog-4.html">Comprehensive Network Monitoring: From Component Discovery to Global Visibility</a></h2><p>In telecommunications, network visibility isn't just about collecting metrics—it's about having the intelligence to detect issues before customers notice them. When you're managing a global mobile core network handling millions of subscriber sessions, comprehensive monitoring becomes the difference between proactive problem resolution and reactive firefighting.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-monitoring-blog-4.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/network-monitoring-blog.html">Building Robust Network Monitoring for Telecommunications: A CloudProber Journey</a></h2><p>In the world of telecommunications, network reliability isn't just important—it's absolutely critical. When millions of subscribers depend on your network for voice calls, data services, and emergency communications, even a few minutes of downtime can have severe consequences. Over the past two years, I've been architecting and implementing comprehensive network monitoring solutions using CloudProber and Prometheus, covering 35+ monitoring implementations across global telecommunications infrastructure.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-monitoring-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/network-troubleshooting-blog.html">Advanced Network Troubleshooting: Building IMSI-Based PCAP Analysis Tools</a></h2><p>When network issues occur in telecommunications infrastructure, time is everything. A single subscriber complaint can escalate to major network outages if not resolved quickly. In the world of mobile core networks, traditional debugging approaches often fall short when trying to trace subscriber-specific issues across complex protocol stacks.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-troubleshooting-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/network-visualization-blog.html">Visualizing Complex Network Topologies: From Chaos to Clarity</a></h2><p>*How I built interactive network visualization tools to make sense of multi-region telecommunications infrastructure*</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/network-visualization-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/partner-integration-telco-blog.html">Telecommunications Partner Integration: Building Scalable Multi-Partner Architectures</a></h2><p>In the telecommunications industry, success is measured not just by the quality of your own network, but by your ability to seamlessly integrate with partners worldwide. During my work on telecommunications infrastructure, I led the integration of multiple major partners - Partner A, Partner B, and Partner E - each representing different challenges, technical requirements, and business relationships that collectively serve millions of mobile subscribers globally.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/partner-integration-telco-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/prometheus-ecosystem-blog.html">Mastering the Prometheus Ecosystem: From Metrics Collection to Long-term Storage</a></h2><p>The Prometheus ecosystem has become the de facto standard for cloud-native monitoring, but mastering its full potential requires understanding not just Prometheus itself, but the entire ecosystem of tools that make it production-ready. Over the past year, I've worked extensively with a comprehensive Prometheus stack that includes Prometheus, Alertmanager, Thanos, and various exporters across multiple datacenters. This deep hands-on experience has given me insights into how these tools work together to create a robust, scalable monitoring solution.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/prometheus-ecosystem-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/prometheus-integration-blog.html">Mastering Prometheus Integration: From Batch Jobs to Production Monitoring</a></h2><p>Prometheus has become the de facto standard for monitoring modern infrastructure, but integrating batch jobs and scheduled workflows presents unique challenges. This blog post explores advanced Prometheus integration patterns, focusing on the Pushgateway pattern for batch job monitoring and best practices for production deployments.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/prometheus-integration-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/prometheus-metrics-blog.html">Implementing Prometheus Metrics for DNS Services: A Complete Observability Strategy</a></h2><p>In modern network infrastructure, visibility is paramount. DNS services, being critical infrastructure components, require comprehensive monitoring to ensure reliability, performance, and security. This post explores implementing Prometheus metrics for DNS services, with practical examples from building a custom CoreDNS deployment for wireless infrastructure.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/prometheus-metrics-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/prometheus-monitoring-blog.html">Building Production-Ready Prometheus Monitoring for Wireless Infrastructure</a></h2><p>In today's telecommunications landscape, monitoring wireless infrastructure is critical for maintaining service quality and operational efficiency. This blog post details the development of a specialized Prometheus metrics exporter designed specifically for wireless infrastructure monitoring at scale.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/prometheus-monitoring-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="other">
+          <header>
+            <div class="title"><h2><a href="posts/python-module-architecture-blog.html">Modern Python Module Architecture: Building Extensible Monitoring Applications</a></h2><p>Creating maintainable, extensible Python applications requires thoughtful module architecture from the start. This post explores the design decisions behind building a production monitoring service, focusing on module structure, packaging, and extensibility patterns.</p></div>
+            <div class="meta"><span class="published">Other</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/python-module-architecture-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Other</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="security">
+          <header>
+            <div class="title"><h2><a href="posts/security-cve-remediation-blog.html">Security First: A Systematic Approach to CVE Remediation and Infrastructure Hardening</a></h2><p>In today's rapidly evolving cybersecurity landscape, maintaining secure infrastructure is not just a best practice—it's a business imperative. This blog post details a comprehensive security hardening initiative that addressed critical vulnerabilities while modernizing deployment infrastructure for a wireless network analysis service.</p></div>
+            <div class="meta"><span class="published">Security</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/security-cve-remediation-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Security</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/telecom-analysis-blog.html">Deep Dive into Telecom Protocol Analysis: Building Tools for Diameter Traffic Inspection</a></h2><p>Telecom networks operate on complex protocols that require specialized analysis tools for troubleshooting, optimization, and compliance monitoring. The Diameter protocol, fundamental to 4G/5G networks, handles critical functions like authentication, authorization, and accounting across network elements.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecom-analysis-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-architecture-blog.html">Building Cloud-Native Telecommunications Architecture: From Legacy Networks to 5G-Ready Infrastructure</a></h2><p>The telecommunications industry stands at a pivotal inflection point. Traditional network architectures, built on monolithic hardware appliances and proprietary software, are giving way to cloud-native, software-defined networks that promise unprecedented flexibility, scalability, and innovation velocity.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-architecture-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-dra-architecture-blog.html">Building Scalable Telecommunications Infrastructure: A Deep Dive into DRA Architecture</a></h2><p>In the rapidly evolving telecommunications landscape, the ability to seamlessly connect multiple network partners while maintaining high availability and performance is crucial. During my work on the Wireless Service OmniTouch DRA (Diameter Routing Agent) project, I had the opportunity to design and implement a scalable, multi-partner telecommunications infrastructure that serves as the backbone for modern wireless communications.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-dra-architecture-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-infrastructure-blog-2.html">Building Scalable SIM OTA Infrastructure: Managing Global Telecommunications Networks</a></h2><p>The telecommunications industry operates on a foundation of complex, interconnected systems that must seamlessly serve millions of subscribers across diverse geographical regions and network operators. This blog post explores the technical challenges and innovative solutions in building scalable SIM Over-The-Air (OTA) infrastructure that supports global operations.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-infrastructure-blog-2.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-infrastructure-blog-3.html">Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure</a></h2><p>Signal Transfer Points (STPs) are the unsung heroes of modern telecommunications networks. They serve as the digital equivalent of telephone switches, routing critical signaling messages that enable everything from phone calls to text messages to work seamlessly across carrier networks. During my work on the project project, I had the opportunity to build production-ready STP infrastructure using open-source technologies, specifically integrating the OSMO (Open Source Mobile Communications) stack into a modern, containerized architecture.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-infrastructure-blog-3.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-infrastructure-blog.html">Building Robust Telecommunications Infrastructure: A Deep Dive into MSISDN Management and SIM Provisioning</a></h2><p>The telecommunications industry operates on a foundation of complex, interconnected systems that must work flawlessly 24/7. Behind every SIM card activation, every phone number assignment, and every network connection lies sophisticated infrastructure designed for scale, reliability, and precision.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="monitoring">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-monitoring-blog.html">Automating Telecommunications Infrastructure Monitoring: A DevOps Approach to MSISDN Stock Management</a></h2><p>In the rapidly evolving telecommunications industry, maintaining visibility into critical resources like MSISDN (Mobile Station International Subscriber Directory Number) stock levels is crucial for uninterrupted service delivery. This blog post explores how modern DevOps practices can be applied to automate telecommunications infrastructure monitoring, specifically focusing on MSISDN stock management.</p></div>
+            <div class="meta"><span class="published">Monitoring</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-monitoring-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Monitoring</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="telecom">
+          <header>
+            <div class="title"><h2><a href="posts/telecommunications-security-blog.html">Securing Critical Telecommunications Infrastructure: A Defense-in-Depth Approach</a></h2><p>In the telecommunications industry, security isn't just about protecting data—it's about safeguarding critical national infrastructure, ensuring emergency service availability, and maintaining the trust of millions of subscribers. Over the past two years, I've been implementing comprehensive security measures across wireless telecommunications infrastructure, establishing defense-in-depth strategies that protect services handling billions of transactions and supporting critical communications for millions of users.</p></div>
+            <div class="meta"><span class="published">Telecom</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/telecommunications-security-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Telecom</a></li></ul>
+          </footer>
+        </article>
+
+        <article class="post" data-category="infra">
+          <header>
+            <div class="title"><h2><a href="posts/wireless-infrastructure-blog.html">DNS Infrastructure for Wireless Networks: Building Reliable Services for Private PGW Environments</a></h2><p>Wireless telecommunications infrastructure demands exceptional reliability, low latency, and seamless integration across complex network topologies. DNS services in wireless environments face unique challenges that go far beyond traditional enterprise DNS requirements. This post explores building specialized DNS infrastructure for Private Packet Gateway (PGW) environments, focusing on the intersection of telecommunications protocols, service discovery, and real-time network operations.</p></div>
+            <div class="meta"><span class="published">Infra</span></div>
+          </header>
+          <footer>
+            <ul class="actions"><li><a href="posts/wireless-infrastructure-blog.html" class="button large">Continue Reading</a></li></ul>
+            <ul class="stats"><li><a href="#">Infra</a></li></ul>
+          </footer>
+        </article>
+
+      </div>
+      <section id="sidebar">
+        <section><header><h3>About</h3></header><p>Notes on telecom, infra, and automation.</p></section>
+        <section><header><h3>Categories</h3></header><ul class="posts">
+          <li><a href='#' data-filter='other'>Other</a> <span class='published'>(8)</span></li>
+          <li><a href='#' data-filter='automation'>Automation</a> <span class='published'>(2)</span></li>
+          <li><a href='#' data-filter='devops'>Devops</a> <span class='published'>(13)</span></li>
+          <li><a href='#' data-filter='infra'>Infra</a> <span class='published'>(20)</span></li>
+          <li><a href='#' data-filter='containers'>Containers</a> <span class='published'>(8)</span></li>
+          <li><a href='#' data-filter='telecom'>Telecom</a> <span class='published'>(8)</span></li>
+          <li><a href='#' data-filter='monitoring'>Monitoring</a> <span class='published'>(11)</span></li>
+          <li><a href='#' data-filter='security'>Security</a> <span class='published'>(1)</span></li>
+
+        </ul></section>
+        <section><header><h3>Recent</h3></header><ul class="posts">
+          <li><a href='posts/telecommunications-infrastructure-blog-3.html'>Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure</a> <span class='published'>Infra</span></li>
+          <li><a href='posts/telecommunications-infrastructure-blog.html'>Building Robust Telecommunications Infrastructure: A Deep Dive into MSISDN Management and SIM Provisioning</a> <span class='published'>Infra</span></li>
+          <li><a href='posts/telecommunications-monitoring-blog.html'>Automating Telecommunications Infrastructure Monitoring: A DevOps Approach to MSISDN Stock Management</a> <span class='published'>Monitoring</span></li>
+          <li><a href='posts/telecommunications-security-blog.html'>Securing Critical Telecommunications Infrastructure: A Defense-in-Depth Approach</a> <span class='published'>Telecom</span></li>
+          <li><a href='posts/wireless-infrastructure-blog.html'>DNS Infrastructure for Wireless Networks: Building Reliable Services for Private PGW Environments</a> <span class='published'>Infra</span></li>
+
+        </ul></section>
+      </section>
+      <section id="footer"><p class="copyright">&copy; 2025</p></section>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+      (function(){
+        function setFilter(cat){
+          document.querySelectorAll('#header nav.links a').forEach(function(a){a.classList.toggle('active', a.getAttribute('data-filter')===cat);});
+          document.querySelectorAll('#main article.post').forEach(function(el){
+            var c = el.getAttribute('data-category');
+            el.style.display = (cat==='all' || c===cat) ? '' : 'none';
+          });
+        }
+        document.querySelectorAll('#header nav.links a').forEach(function(a){
+          var f = a.getAttribute('data-filter');
+          if (!f) return;
+          a.addEventListener('click', function(e){ e.preventDefault(); history.replaceState(null,'','#'+f); setFilter(f); });
+        });
+        document.querySelectorAll('#sidebar a[data-filter]').forEach(function(a){
+          a.addEventListener('click', function(e){ e.preventDefault(); setFilter(this.getAttribute('data-filter')); });
+        });
+        // Apply filter from URL hash if present
+        var h = (location.hash||'').replace('#','').toLowerCase();
+        var cats = ['all','infra','automation','aws','monitoring','telecom','containers','devops','security','other'];
+        setFilter(cats.indexOf(h)>=0 ? h : 'all');
+      })();
+    </script>
+  </body>
+</html>

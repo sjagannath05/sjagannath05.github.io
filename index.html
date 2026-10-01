@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Jagannath S Personal Page </title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	    <script>(function(){
+var D=document.documentElement;
+try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
+function cur(){var a=D.getAttribute('data-theme');if(a)return a;
+return window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
+document.addEventListener('DOMContentLoaded',function(){
+var host=document.querySelector('.header-inner')||document.querySelector('#sidebar .inner')
+||document.querySelector('#header nav.links')||document.querySelector('#header');
+if(!host||host.querySelector('.theme-toggle'))return;
+var b=document.createElement('button');
+b.type='button';b.className='theme-toggle';
+b.innerHTML='<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>'
++'<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+function sync(){var c=cur();b.setAttribute('aria-label',c==='dark'?'Switch to light theme':'Switch to dark theme');
+b.setAttribute('title',b.getAttribute('aria-label'));}
+sync();
+b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
+D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
+host.appendChild(b);});})();</script>
+  </head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<a href="https://nuti-consultants.github.io/" target="_blank" rel="noopener" style="display:inline-block;margin:0 0 1rem;">
+						<img src="images/nuti_logo.png" alt="Nuti Consultants" style="max-width: 160px; height: auto; display:block;" />
+					</a>
+					<nav>
+						<ul>
+							<li><a href="#intro">About</a></li>
+							<li><a href="#two">Work Profile</a></li>
+							<li><a href="#one">Areas of Interest</a></li>
+							<li><a href="#three">Get in touch</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<span class="eyebrow">Mobile core &middot; Go &amp; C &middot; 14 years</span>
+							<h1>Core Network Software Engineer</h1>
+							<p>I architect and operate reliable telecom and cloud-native systems spanning LTE/5G core, virtualization, and modern platform automation. I work hands-on across Kubernetes, AWS, and observability to deliver resilient systems.</p>
+							<p>I write the network functions that carry mobile traffic &mdash; GTP, Diameter, SS7/SIGTRAN, RADIUS &mdash; and operate the Kubernetes platform they run on. Most of my work is the unglamorous middle of a mobile network: the routing decisions, the failover paths, and the tooling that makes a carrier interconnect survive a bad Tuesday.</p>
+							<div class="sigpath" role="img" aria-label="LTE user-plane path: UE to eNodeB over Uu, to Serving Gateway over S1-U, to Packet Gateway over S5/S8, out to the internet over SGi.">
+								<svg viewBox="0 0 500 64" xmlns="http://www.w3.org/2000/svg">
+									<line class="link" x1="82" y1="27" x2="146" y2="27"/>
+									<line class="link" x1="222" y1="27" x2="286" y2="27"/>
+									<line class="link" x1="362" y1="27" x2="418" y2="27"/>
+									<rect class="node" x="6"   y="14" width="76" height="26" rx="3"/>
+									<rect class="node" x="146" y="14" width="76" height="26" rx="3"/>
+									<rect class="node" x="286" y="14" width="76" height="26" rx="3"/>
+									<rect class="node" x="418" y="14" width="76" height="26" rx="3"/>
+									<text class="label" x="44"  y="31" text-anchor="middle">UE</text>
+									<text class="label" x="184" y="31" text-anchor="middle">eNodeB</text>
+									<text class="label" x="324" y="31" text-anchor="middle">SGW</text>
+									<text class="label" x="456" y="31" text-anchor="middle">PGW</text>
+									<text class="iface" x="114" y="11" text-anchor="middle">Uu</text>
+									<text class="iface" x="254" y="11" text-anchor="middle">S1-U</text>
+									<text class="iface" x="390" y="11" text-anchor="middle">S5/S8</text>
+									<text class="iface" x="456" y="55" text-anchor="middle">SGi &#8594;</text>
+									<circle class="pkt" cx="82" cy="27" r="3"/>
+								</svg>
+							</div>
+							<ul class="actions">
+								<li><a href="#one" class="button scrolly">Learn more</a></li>
+								<li><a href="https://nuti-consultants.github.io/" class="button" target="_blank" rel="noopener">Consulting</a></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- One -->
+					<section id="one" class="wrapper style2 spotlights">
+						<section>
+							<div class="content">
+								<div class="inner">
+									<h2>Areas of Interest</h2>
+									<p>Cloud-native infrastructure and telecom systems with a focus on reliability, automation, and observability.</p>
+									<ul>
+										<li>Kubernetes, containers, and AWS architecture</li>
+										<li>Observability: Prometheus, alerting, SLOs</li>
+										<li>Telecom protocols: Diameter, GTP, SIP/IMS</li>
+										<li>Infrastructure as Code and DevOps tooling</li>
+										<li>Security: PKI, certificates, secret management</li>
+									</ul>
+									<ul class="actions">
+										<li><a href="blog/index.html#containers" class="button">Containers</a></li>
+										<li><a href="blog/index.html#monitoring" class="button">Monitoring</a></li>
+										<li><a href="blog/index.html#telecom" class="button">Telecom</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<section>
+							<div class="content">
+								<div class="inner">
+									<h2>Professional Summary</h2>
+									<p>14 years across virtualization, LTE/5G core and cloud-native platforms. Primary author of a carrier-grade GTP proxy, an SS7 signalling transfer point and Diameter routing agents; operator of the Kubernetes platform running 30+ wireless network functions.</p>
+									<ul class="actions">
+										<li><a href="https://www.linkedin.com/in/sjaga/" target="_blank" rel="noopener" class="button">LinkedIn</a></li>
+										<li><a href="blog/index.html#devops" class="button">DevOps</a></li>
+										<li><a href="blog/index.html#infra" class="button">Infra</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<section>
+							<div class="content">
+								<div class="inner">
+									<h2>Work Highlights</h2>
+									<p>Selected projects in telecom routing, observability at scale, and containerized service delivery.</p>
+									<ul class="actions">
+										<li><a href="blog/index.html#telecom" class="button">Telecom</a></li>
+										<li><a href="blog/index.html#monitoring" class="button">Observability</a></li>
+										<li><a href="blog/index.html#containers" class="button">Kubernetes</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+					</section>
+
+				<!-- Two -->
+					<section id="two" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>Capabilities</h2>
+							<p>Where the work actually sits. Each links to the related writing.</p>
+							<div class="features">
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 6.2v7.6L12 18l8-4.2V6.2Z"/><path d="M4 6.2 12 10l8-3.8M12 10v8"/></svg></span>
+									<h3>Kubernetes & AWS</h3>
+									<p>Multi-region deployments, scaling, CI/CD. <a href="blog/index.html#containers">See posts</a>.</p>
+								</section>
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18"/><path d="M3 14l4-5 3.5 3.5L15 6l3 4.5"/><circle cx="18" cy="10.5" r="1.6"/></svg></span>
+									<h3>Observability</h3>
+									<p>Prometheus stack, alerting, SLOs. <a href="blog/index.html#monitoring">See posts</a>.</p>
+								</section>
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M18 13H6M6 17.5h12"/><path d="M15.5 5.5 18 8l-2.5 2.5M8.5 10.5 6 13l2.5 2.5"/></svg></span>
+									<h3>Telecom Protocols</h3>
+									<p>Diameter, GTP, SIP/IMS. <a href="blog/index.html#telecom">See posts</a>.</p>
+								</section>
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h5l3 5-3 5H3"/><path d="M11 7h5l3 5-3 5h-5"/></svg></span>
+									<h3>Automation & IaC</h3>
+									<p>Ansible, pipelines, GitOps. <a href="blog/index.html#devops">See posts</a>.</p>
+								</section>
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4 3 7.3 7 8.5 4-1.2 7-4.5 7-8.5V6Z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></span>
+									<h3>Security</h3>
+									<p>PKI, certificates, secret management. <a href="blog/index.html#security">See posts</a>.</p>
+								</section>
+								<section>
+									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.2"/><circle cx="18.5" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.7 6h8.6M6.6 8l4.2 8M17.4 8l-4.2 8"/></svg></span>
+									<h3>Architecture</h3>
+									<p>Network & platform design. <a href="blog/index.html#infra">See posts</a>.</p>
+								</section>
+							</div>
+						</div>
+					</section>
+
+				<!-- Three -->
+					<section id="three" class="wrapper style1 fade-up">
+						<div class="inner">
+							<h2>Get in touch</h2>
+							<p>Happy to talk about mobile core work, carrier interconnect, or running telecom workloads on Kubernetes. The quickest route is email or LinkedIn.</p>
+							<div class="split style1">
+								<section>
+									<form method="post" action="https://formspree.io/f/mayvvkbw">
+										<div class="fields">
+											<div class="field half">
+												<label for="name">Name</label>
+												<input type="text" name="name" id="name" />
+											</div>
+											<div class="field half">
+												<label for="email">Email</label>
+												<input type="text" name="email" id="email" />
+											</div>
+											<div class="field">
+												<label for="message">Message</label>
+												<textarea name="message" id="message" rows="5"></textarea>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><button type="submit" class="button primary">Send message</button></li>
+										</ul>
+									</form>
+								</section>
+								<section>
+									<ul class="contact">
+										<li>
+											<h3>Address</h3>
+											<span>Hassan, Karnataka</span>
+										</li>
+										<li>
+											<h3>Email</h3>
+											<a href="#">sjagannath05@gmail.com</a>
+										</li>
+										<li>
+											<h3>Phone</h3>
+											<span>+91 98446 60415</span>
+										</li>
+										<li>
+											<h3>Social</h3>
+									<ul class="icons">
+											<li><a href="https://github.com/JagannathS" class="icon-link"><span>GitHub</span></a></li>
+											<li><a href="https://github.com/sjagannath05" class="icon-link"><span>GitHub (Alt)</span></a></li>
+											<li><a href="https://www.linkedin.com/in/sjaga/" class="icon-link"><span>LinkedIn</span></a></li>
+											<li><a href="https://twitter.com/JagannathSJ" class="icon-link"><span>Twitter</span></a></li>
+											<li><a href="https://hub.docker.com/u/jagannaths" class="icon-link"><span>Docker Hub</span></a></li>
+											<li><a href="https://nuti-consultants.github.io/" class="icon-link"><span>Consulting</span></a></li>
+										</ul>
+										</li>
+									</ul>
+								</section>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; 2025 Jagannath S. All rights reserved.</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/clearform.js"></script>
+
+	</body>
+</html>

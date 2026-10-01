@@ -1,0 +1,5 @@
+scripts/scrub-map.json
+scripts/*.bak
+scripts/
+__pycache__/
+*.pyc
