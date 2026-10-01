@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The Prometheus stack, split three ways: what I configured, what I operated, what the software does</h2><p>An honest accounting of a monitoring stack, because &quot;I worked with Prometheus, Alertmanager and Thanos&quot; hides three very different claims.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>An honest accounting of a monitoring stack, because "I worked with Prometheus, Alertmanager and Thanos" hides three very different claims.</p>
 <h2>Why the split matters</h2>
 <p>Most writing about the Prometheus ecosystem blurs three things together: configuration someone authored, a service someone operates, and behaviour that is simply how the upstream software works. The third category is the largest by far, and it belongs to the Prometheus authors — describing it in the first person is the most common way a monitoring post becomes fiction.</p>
 <p>So here is my own stack, sorted.</p>

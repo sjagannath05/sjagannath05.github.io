@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Jagannath S Personal Page </title>
+		<title>Jagannath Subramanya — mobile core engineering</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -31,15 +31,16 @@ host.appendChild(b);});})();</script>
 		<!-- Sidebar -->
 			<section id="sidebar">
 				<div class="inner">
-					<a href="https://nuti-consultants.github.io/" target="_blank" rel="noopener" style="display:inline-block;margin:0 0 1rem;">
-						<img src="images/nuti_logo.png" alt="Nuti Consultants" style="max-width: 160px; height: auto; display:block;" />
-					</a>
+					<span class="t-name">Jagannath Subramanya</span>
+					<span class="t-what">Mobile core &middot; Go &amp; C</span>
 					<nav>
 						<ul>
 							<li><a href="#intro">About</a></li>
-							<li><a href="#two">Work Profile</a></li>
-							<li><a href="#one">Areas of Interest</a></li>
-							<li><a href="#three">Get in touch</a></li>
+							<li><a href="#work">Selected work</a></li>
+							<li><a href="#earlier">Earlier work</a></li>
+							<li><a href="#writing">Writing</a></li>
+							<li><a href="blog/index.html">Blog</a></li>
+							<li><a href="#contact">Contact</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -49,197 +50,189 @@ host.appendChild(b);});})();</script>
 			<div id="wrapper">
 
 				<!-- Intro -->
-					<section id="intro" class="wrapper style1 fullscreen fade-up">
+					<section id="intro" class="wrapper">
 						<div class="inner">
 							<span class="eyebrow">Mobile core &middot; Go &amp; C &middot; 14 years</span>
-							<h1>Core Network Software Engineer</h1>
-							<p>I architect and operate reliable telecom and cloud-native systems spanning LTE/5G core, virtualization, and modern platform automation. I work hands-on across Kubernetes, AWS, and observability to deliver resilient systems.</p>
-							<p>I write the network functions that carry mobile traffic &mdash; GTP, Diameter, SS7/SIGTRAN, RADIUS &mdash; and operate the Kubernetes platform they run on. Most of my work is the unglamorous middle of a mobile network: the routing decisions, the failover paths, and the tooling that makes a carrier interconnect survive a bad Tuesday.</p>
-							<div class="sigpath" role="img" aria-label="LTE user-plane path: UE to eNodeB over Uu, to Serving Gateway over S1-U, to Packet Gateway over S5/S8, out to the internet over SGi.">
-								<svg viewBox="0 0 500 64" xmlns="http://www.w3.org/2000/svg">
-									<line class="link" x1="82" y1="27" x2="146" y2="27"/>
-									<line class="link" x1="222" y1="27" x2="286" y2="27"/>
-									<line class="link" x1="362" y1="27" x2="418" y2="27"/>
-									<rect class="node" x="6"   y="14" width="76" height="26" rx="3"/>
-									<rect class="node" x="146" y="14" width="76" height="26" rx="3"/>
-									<rect class="node" x="286" y="14" width="76" height="26" rx="3"/>
-									<rect class="node" x="418" y="14" width="76" height="26" rx="3"/>
-									<text class="label" x="44"  y="31" text-anchor="middle">UE</text>
-									<text class="label" x="184" y="31" text-anchor="middle">eNodeB</text>
-									<text class="label" x="324" y="31" text-anchor="middle">SGW</text>
-									<text class="label" x="456" y="31" text-anchor="middle">PGW</text>
-									<text class="iface" x="114" y="11" text-anchor="middle">Uu</text>
-									<text class="iface" x="254" y="11" text-anchor="middle">S1-U</text>
-									<text class="iface" x="390" y="11" text-anchor="middle">S5/S8</text>
-									<text class="iface" x="456" y="55" text-anchor="middle">SGi &#8594;</text>
-									<circle class="pkt" cx="82" cy="27" r="3"/>
-								</svg>
+							<h1>I write the network functions that carry mobile traffic</h1>
+							<p>GTP, Diameter, SS7/SIGTRAN, RADIUS, and the DNS and lifecycle tooling around them. Most of it is the
+							unglamorous middle of a mobile network: routing decisions, failover paths, and the tooling that makes a
+							carrier interconnect survive a bad Tuesday.</p>
+							<p>Below is what I actually built, with the commit counts behind each claim and a label saying whether I
+							authored it, contributed to it, or only operated it. Where there is a write-up, it is linked. Where a
+							number does not exist, I have not invented one.</p>
+						</div>
+					</section>
+
+				<!-- Work -->
+					<section id="work" class="wrapper">
+						<div class="inner">
+							<h2>Selected work</h2>
+							<p>Counts are non-merge commits attributed to me, deduplicated by commit hash across clones and
+							worktrees. Vendor imports and generated config are excluded from line counts.</p>
+							<div class="work">
+							<article class="work-row">
+								<header>
+									<h3>GTP proxy</h3>
+									<span class="work-role work-role--authored">authored</span>
+								</header>
+								<p class="work-metric">1,243 commits · +402,558 lines · 674 files</p>
+								<p>Go, SQL. Ten-tier routing (composite, APN, IMSI group, pinned APN, MCC/MNC, scope-policy gate); 138 SQL files of schema, stored functions and migrations. Load-tested to 100k+ concurrent sessions.</p>
+								
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>5G network-function lifecycle tooling</h3>
+									<span class="work-role work-role--authored">authored</span>
+								</header>
+								<p class="work-metric">531 commits · +119,915 lines · 285 files</p>
+								<p>Python, Jinja, Helm. Install and lifecycle tooling for vendor 5G network functions — survey mode that reports every blocker instead of stopping at the first, site-parameterised Day-1 builds, per-site transforms and cutovers for SMF, PCF, UDR and UDSF.</p>
+								
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>SS7 signalling transfer point</h3>
+									<span class="work-role work-role--authored">authored</span>
+								</header>
+								<p class="work-metric">243 of 249 commits · +16,750 lines of C</p>
+								<p>C, on an Osmocom base. MAP application-context translation between partners that will not change version (opcode 44 ↔ 46), whole-dialogue coverage including Invoke-less BEGIN, address hiding at both the SCCP and MTP layers, and rate counters because a silently non-firing translation looks like success.</p>
+								<ul class="work-links"><li><a href="blog/posts/telecommunications-infrastructure-blog-3.html">MAP translation</a></li><li><a href="blog/posts/containerization-strategy-blog.html">containerising it</a></li><li><a href="blog/posts/devops-automation-blog-5.html">base images</a></li></ul>
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>APN DNS</h3>
+									<span class="work-role work-role--authored">authored</span>
+								</header>
+								<p class="work-metric">48 commits</p>
+								<p>Go, CoreDNS plugins. One container that speaks iBGP and answers DNS, advertising each of its own addresses as a /32; a NAPTR load-balancing plugin of my own compiled in alongside response-rate limiting. The plugin is public.</p>
+								<ul class="work-links"><li><a href="blog/posts/network-engineering-blog.html">advertising its own addresses</a></li><li><a href="blog/posts/infrastructure-modernization-blog.html">off CoreDNS and back</a></li></ul>
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>RADIUS service</h3>
+									<span class="work-role work-role--authored">authored</span>
+								</header>
+								<p class="work-metric">42 commits · +8,121 lines</p>
+								<p>Python, Go, Shell.</p>
+								
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>Diameter routing agent</h3>
+									<span class="work-role work-role--contributed">contributed</span>
+								</header>
+								<p class="work-metric">~160 commits of 830</p>
+								<p>C and Python at the freeDiameter extension boundary. Per-AVP transforms, the memory-ownership bug behind a production SIGABRT (a message freed after send had already taken ownership), and a self-service development relay that fails clean instead of falling back to production.</p>
+								<ul class="work-links"><li><a href="blog/posts/diameter-protocol-implementation-blog.html">the double free</a></li><li><a href="blog/posts/dra-infrastructure-blog.html">four flavours, one agent</a></li><li><a href="blog/posts/partner-integration-telco-blog.html">onboarding a partner</a></li></ul>
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>IMS core</h3>
+									<span class="work-role work-role--contributed">contributed</span>
+								</header>
+								<p class="work-metric">19 of 144 commits on main</p>
+								<p>The Kamailio configuration is a colleague's. Mine is the three-way image split, the metrics endpoints, IPsec, the FRR base image and the move off Jenkins.</p>
+								<ul class="work-links"><li><a href="blog/posts/ims-architecture-blog.html">four changes to an IMS I did not write</a></li><li><a href="blog/posts/ims-modernization-blog.html">splitting the image</a></li></ul>
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>IP-SM-GW</h3>
+									<span class="work-role work-role--contributed">contributed</span>
+								</header>
+								<p class="work-metric">M3UA routing contexts; deployment framework</p>
+								<p>The application is a colleague's. Mine is the M3UA routing-context feature against the STP above, SCTP/M3UA transport hardening in a vendored FSM, and a self-service deployment generator.</p>
+								
+							</article>
+							<article class="work-row">
+								<header>
+									<h3>ArgoCD · Vault · an open-source Kubernetes dashboard</h3>
+									<span class="work-role work-role--operated">operated</span>
+								</header>
+								<p class="work-metric">no commits, and that is the point</p>
+								<p>The platform team runs ArgoCD; I use it to check sync and health state, read pod logs, diagnose drift, resync against git and redeploy. Vault is consumed, not operated. The dashboard is open source — I wrote its Helm chart and scoped its RBAC to the namespaces we own, and nothing upstream.</p>
+								
+							</article>
 							</div>
+						</div>
+					</section>
+
+				<!-- Earlier -->
+					<section id="earlier" class="wrapper">
+						<div class="inner">
+							<h2>Earlier work</h2>
+							<p>Twelve years before any of the above, in defence communications and then 4G/5G product
+							development. None of it has a public repository behind it, so there are no commit counts here —
+							it is listed the way a record should be when the evidence is a shipped system rather than a diff.
+							It ran roughly in that order: instruments, then models, then radio planning, then building the thing.</p>
+							<div class="eras">
+							<article class="era">
+								<header>
+									<span class="era-when">2012 – 2015</span>
+									<h3>Instruments, models, and the first virtual data centre</h3>
+									<span class="era-role">Senior engineer, defence communications</span>
+								</header>
+								<ul><li>Network performance and cable testing with JDSU/Viavi and VeEX instruments (MTS 5800, MTS 6000A, TPS, TX300s).</li><li>Simulated and emulated both wired and wireless networks in OPNET/Riverbed Modeler, CORE Emulator and NS-3 &mdash; OSPF and MANET mobile routing models, parametric studies against selected variables, and integration of the simulated environment with the physical one so a mixed topology could be exercised end to end.</li><li>Cut dynamic-network convergence time by tuning OSPF timers across a 150+ routed network in OPNET.</li><li>Designed and built a tactical data centre on VMware over ATCA hardware (Radisys and Emerson chassis and blades), exercising DVS, DRS, HA, SRM and FT, plus a Horizon View VDI pilot &mdash; then demonstrated it to the customer.</li><li>Used the same VMware estate to emulate a tactical communications network with virtual routers, as a cheaper stand-in for the physical one.</li><li>Ported Cisco ESR onto custom hardware &mdash; ATCA, Adlink CPCI single-board computers and in-house boards &mdash; and built a Windows VoIP softphone on the Ozeki SDK, integrated against Cisco Call Manager and Asterisk.</li><li>Multi-vendor routing and switching (Cisco Catalyst, Juniper, MikroTik, Kontron, Radisys and Emerson ATCA switch modules); OSPF, EIGRP and VLAN trunking; CCNA/CCNP lab environments in GNS3 and Packet Tracer.</li><li>Requirement gathering and analysis through to requirement documents, vendor selection, user manuals and quick-start guides, and customer demonstration.</li></ul>
+							</article>
+							<article class="era">
+								<header>
+									<span class="era-when">2016 – 2018</span>
+									<h3>Virtualization</h3>
+									<span class="era-role">Assistant manager, design &amp; engineering</span>
+								</header>
+								<ul><li>Tactical data-centre proof of concept: VMware ESXi on ATCA hardware, exercising DVS, DRS, HA, SRM, FT and VSAN.</li><li>Emulated vendor network products with virtual routers from Cisco, Juniper and Mikrotik alongside open-source FRR and VyOS.</li><li>Built a virtualized environment of virtual routers and Asterisk-based voice services, and modelled CAPEX against a 150+ node network of physical routers.</li><li>Automated VM and virtual-network deployment on VMware with PowerShell and Ansible; evaluated ATCA blade servers for hyper-converged VSAN suitability.</li><li>Owned the compute subsystem of a CPCI gateway system for a national defence customer — driver recompilation onto legacy operating systems (Fedora 8, Windows Server 2008) and an IP monitoring system covering six OS variants.</li></ul>
+							</article>
+							<article class="era">
+								<header>
+									<span class="era-when">2019 – 2022</span>
+									<h3>Solution architecture</h3>
+									<span class="era-role">Manager, design &amp; engineering</span>
+								</header>
+								<ul><li>Private LTE solutioning for a national defence customer: multi-vendor core and RAN selection with BoM, RoM and cost optimisation, virtualization, RoIP/PTT and mesh radio.</li><li>RF simulation in ATDI HTZ Warfare — site optimisation, range and throughput for commercial and vehicle-mounted terminals.</li><li>Owned the technical track of a shipborne TETRA programme end to end (expression of interest, transfer of technology, RFI/RFP responses, bid submission, technical evaluation) — and won it.</li><li>Led an LTE-based modular &ldquo;network in a box&rdquo; with a technical team, and the compute subsystems for FXO/FXS/RoIP/GSM/E1 gateway products.</li><li>Built the business case for taking 5G RAN development in-house — spectrum, vendor and framework analysis with cost and headcount — and presented it at CxO level; bootstrapped a 5G testbed on an open-source stack and hardware.</li><li>Integrated open-source cellular stacks on USRP SDR (srsLTE/srsRAN, OpenAirInterface5G, OpenLTE, NextEPC, Open5GS) and commercial LTE with Airspan eNodeBs against Lemko, Polaris and open-source EPCs; LTE testing with Viavi TM500.</li><li>Demonstrated solutions at customer units and headquarters, and exhibited at DefExpo (from 2014), DefCon, Arttech and Northtech.</li></ul>
+							</article>
+							<article class="era">
+								<header>
+									<span class="era-when">2022 – 2024</span>
+									<h3>Radio</h3>
+									<span class="era-role">Lead software engineer, 4G/5G products</span>
+								</header>
+								<ul><li>Evaluated the Xilinx RFSoC (ZCU670) platform to decide the direction of in-house radio development, acting as the single point of contact between Xilinx and internal teams for board bring-up, demos and reference image builds.</li><li>Owned domestic and international RFI/RFP responses for the 4G/5G product line, coordinating internal engineering and external stakeholders.</li><li>Joined through an acquisition partway through, and carried the product work across the merge.</li></ul>
+							</article>
+							</div>
+							<p class="era-creds"><strong>M.Tech, Computing Systems &amp; Infrastructure</strong> — BITS Pilani, 2017–19 ·
+							<strong>B.E., Electronics &amp; Communication</strong> — NIE Mysuru, 2008–12 · CCNA/CCNP trained · O-RAN certified</p>
+						</div>
+					</section>
+
+				<!-- Writing -->
+					<section id="writing" class="wrapper">
+						<div class="inner">
+							<h2>Writing</h2>
+							<p>Seventy-one posts on the work above &mdash; build systems, protocol faults, and the occasional thing
+							that only looked like it worked. Each is grounded in the repository it describes; where the repository
+							records no measurement, the post says so rather than estimating.</p>
 							<ul class="actions">
-								<li><a href="#one" class="button scrolly">Learn more</a></li>
-								<li><a href="https://nuti-consultants.github.io/" class="button" target="_blank" rel="noopener">Consulting</a></li>
+								<li><a href="blog/index.html" class="button primary">Read the notes</a></li>
+								<li><a href="blog/index.html#telecom" class="button">Telecom</a></li>
+								<li><a href="blog/index.html#infra" class="button">Infra</a></li>
+								<li><a href="blog/index.html#monitoring" class="button">Monitoring</a></li>
 							</ul>
 						</div>
 					</section>
 
-				<!-- One -->
-					<section id="one" class="wrapper style2 spotlights">
-						<section>
-							<div class="content">
-								<div class="inner">
-									<h2>Areas of Interest</h2>
-									<p>Cloud-native infrastructure and telecom systems with a focus on reliability, automation, and observability.</p>
-									<ul>
-										<li>Kubernetes, containers, and AWS architecture</li>
-										<li>Observability: Prometheus, alerting, SLOs</li>
-										<li>Telecom protocols: Diameter, GTP, SIP/IMS</li>
-										<li>Infrastructure as Code and DevOps tooling</li>
-										<li>Security: PKI, certificates, secret management</li>
-									</ul>
-									<ul class="actions">
-										<li><a href="blog/index.html#containers" class="button">Containers</a></li>
-										<li><a href="blog/index.html#monitoring" class="button">Monitoring</a></li>
-										<li><a href="blog/index.html#telecom" class="button">Telecom</a></li>
-									</ul>
-								</div>
-							</div>
-						</section>
-						<section>
-							<div class="content">
-								<div class="inner">
-									<h2>Professional Summary</h2>
-									<p>14 years across virtualization, LTE/5G core and cloud-native platforms. Primary author of a carrier-grade GTP proxy, an SS7 signalling transfer point and Diameter routing agents; operator of the Kubernetes platform running 30+ wireless network functions.</p>
-									<ul class="actions">
-										<li><a href="https://www.linkedin.com/in/sjaga/" target="_blank" rel="noopener" class="button">LinkedIn</a></li>
-										<li><a href="blog/index.html#devops" class="button">DevOps</a></li>
-										<li><a href="blog/index.html#infra" class="button">Infra</a></li>
-									</ul>
-								</div>
-							</div>
-						</section>
-						<section>
-							<div class="content">
-								<div class="inner">
-									<h2>Work Highlights</h2>
-									<p>Selected projects in telecom routing, observability at scale, and containerized service delivery.</p>
-									<ul class="actions">
-										<li><a href="blog/index.html#telecom" class="button">Telecom</a></li>
-										<li><a href="blog/index.html#monitoring" class="button">Observability</a></li>
-										<li><a href="blog/index.html#containers" class="button">Kubernetes</a></li>
-									</ul>
-								</div>
-							</div>
-						</section>
-					</section>
-
-				<!-- Two -->
-					<section id="two" class="wrapper style3 fade-up">
+				<!-- Contact -->
+					<section id="contact" class="wrapper">
 						<div class="inner">
-							<h2>Capabilities</h2>
-							<p>Where the work actually sits. Each links to the related writing.</p>
-							<div class="features">
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 6.2v7.6L12 18l8-4.2V6.2Z"/><path d="M4 6.2 12 10l8-3.8M12 10v8"/></svg></span>
-									<h3>Kubernetes & AWS</h3>
-									<p>Multi-region deployments, scaling, CI/CD. <a href="blog/index.html#containers">See posts</a>.</p>
-								</section>
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18"/><path d="M3 14l4-5 3.5 3.5L15 6l3 4.5"/><circle cx="18" cy="10.5" r="1.6"/></svg></span>
-									<h3>Observability</h3>
-									<p>Prometheus stack, alerting, SLOs. <a href="blog/index.html#monitoring">See posts</a>.</p>
-								</section>
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M18 13H6M6 17.5h12"/><path d="M15.5 5.5 18 8l-2.5 2.5M8.5 10.5 6 13l2.5 2.5"/></svg></span>
-									<h3>Telecom Protocols</h3>
-									<p>Diameter, GTP, SIP/IMS. <a href="blog/index.html#telecom">See posts</a>.</p>
-								</section>
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h5l3 5-3 5H3"/><path d="M11 7h5l3 5-3 5h-5"/></svg></span>
-									<h3>Automation & IaC</h3>
-									<p>Ansible, pipelines, GitOps. <a href="blog/index.html#devops">See posts</a>.</p>
-								</section>
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4 3 7.3 7 8.5 4-1.2 7-4.5 7-8.5V6Z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></span>
-									<h3>Security</h3>
-									<p>PKI, certificates, secret management. <a href="blog/index.html#security">See posts</a>.</p>
-								</section>
-								<section>
-									<span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.2"/><circle cx="18.5" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.7 6h8.6M6.6 8l4.2 8M17.4 8l-4.2 8"/></svg></span>
-									<h3>Architecture</h3>
-									<p>Network & platform design. <a href="blog/index.html#infra">See posts</a>.</p>
-								</section>
-							</div>
-						</div>
-					</section>
-
-				<!-- Three -->
-					<section id="three" class="wrapper style1 fade-up">
-						<div class="inner">
-							<h2>Get in touch</h2>
-							<p>Happy to talk about mobile core work, carrier interconnect, or running telecom workloads on Kubernetes. The quickest route is email or LinkedIn.</p>
-							<div class="split style1">
-								<section>
-									<form method="post" action="https://formspree.io/f/mayvvkbw">
-										<div class="fields">
-											<div class="field half">
-												<label for="name">Name</label>
-												<input type="text" name="name" id="name" />
-											</div>
-											<div class="field half">
-												<label for="email">Email</label>
-												<input type="text" name="email" id="email" />
-											</div>
-											<div class="field">
-												<label for="message">Message</label>
-												<textarea name="message" id="message" rows="5"></textarea>
-											</div>
-										</div>
-										<ul class="actions">
-											<li><button type="submit" class="button primary">Send message</button></li>
-										</ul>
-									</form>
-								</section>
-								<section>
-									<ul class="contact">
-										<li>
-											<h3>Address</h3>
-											<span>Hassan, Karnataka</span>
-										</li>
-										<li>
-											<h3>Email</h3>
-											<a href="#">sjagannath05@gmail.com</a>
-										</li>
-										<li>
-											<h3>Phone</h3>
-											<span>+91 98446 60415</span>
-										</li>
-										<li>
-											<h3>Social</h3>
-									<ul class="icons">
-											<li><a href="https://github.com/JagannathS" class="icon-link"><span>GitHub</span></a></li>
-											<li><a href="https://github.com/sjagannath05" class="icon-link"><span>GitHub (Alt)</span></a></li>
-											<li><a href="https://www.linkedin.com/in/sjaga/" class="icon-link"><span>LinkedIn</span></a></li>
-											<li><a href="https://twitter.com/JagannathSJ" class="icon-link"><span>Twitter</span></a></li>
-											<li><a href="https://hub.docker.com/u/jagannaths" class="icon-link"><span>Docker Hub</span></a></li>
-											<li><a href="https://nuti-consultants.github.io/" class="icon-link"><span>Consulting</span></a></li>
-										</ul>
-										</li>
-									</ul>
-								</section>
-							</div>
+							<h2>Contact</h2>
+							<p>Happy to talk about mobile core work, carrier interconnect, or running telecom workloads on
+							Kubernetes.</p>
+							<ul class="contact-list">
+								<li><span class="work-role">email</span> <a href="mailto:sjagannath05@gmail.com">sjagannath05@gmail.com</a></li>
+								<li><span class="work-role">github</span> <a href="https://github.com/sjagannath05" target="_blank" rel="noopener">sjagannath05</a></li>
+								<li><span class="work-role">linkedin</span> <a href="https://www.linkedin.com/in/sjaga/" target="_blank" rel="noopener">in/sjaga</a></li>
+							</ul>
 						</div>
 					</section>
 
 			</div>
-
-		<!-- Footer -->
-			<footer id="footer" class="wrapper style1-alt">
-				<div class="inner">
-					<ul class="menu">
-						<li>&copy; 2025 Jagannath S. All rights reserved.</li>
-					</ul>
-				</div>
-			</footer>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
@@ -249,7 +242,6 @@ host.appendChild(b);});})();</script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-			<script src="assets/js/clearform.js"></script>
 
 	</body>
 </html>

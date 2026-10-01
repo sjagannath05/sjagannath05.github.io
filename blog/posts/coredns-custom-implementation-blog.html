@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Bootstrapping a build cache that needs its own output</h2><p>The DNS image for our private PGWs is two lines:</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>The DNS image for our private PGWs is two lines:</p>
 <div class="codehilite"><pre><span></span><code>FROM coredns/coredns:1.11.1
 EXPOSE 11915/tcp
 </code></pre></div>

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The exporter that reported nothing, quietly</h2><p>A Prometheus exporter whose queries ran, returned rows, and populated no metric at all — because a column alias did not match a metric name.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>A Prometheus exporter whose queries ran, returned rows, and populated no metric at all — because a column alias did not match a metric name.</p>
 <h2>What the thing is</h2>
 <p><code>wireless-query-exporter</code> is upstream <code>query-exporter</code> (pinned at 2.8.1) with two SQL statements pointed at a read replica, and the gauges it exposes are inventory counts. The configuration is three YAML files that get concatenated at validation time and rendered by <code>envtpl</code> at container start:</p>
 <div class="codehilite"><pre><span></span><code><span class="c1"># databases.yaml</span>

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>An interface with no address</h2><p>A GTP prober that died before it sent a packet, and the one line in somebody else&#x27;s source that fixed it.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>A GTP prober that died before it sent a packet, and the one line in somebody else's source that fixed it.</p>
 <h2>What the image is</h2>
 <p><code>wireless-prober</code> is upstream cloudprober (0.13.7, unmodified) with one extra binary copied into it. Cloudprober checks ICMP, HTTP and DNS paths; it cannot send a GTP echo request (GTP-C, UDP 2123). That was the thing we needed — whether a tunnel endpoint answers on 2123, never mind whether its host answers a ping. So the image builds <code>gtping</code> from source in an Alpine stage (musl-dev, linux-headers, gcc, make), copies out the binary, and exposes 9313 so probe results land in the same metrics pipeline as everything else.</p>
 <p>The interesting line is the third one:</p>

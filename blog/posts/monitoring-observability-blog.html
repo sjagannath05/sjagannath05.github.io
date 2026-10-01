@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Federating another Prometheus: honor_labels and a timeout that would not load</h2><p>One scrape job, three commits in an afternoon, and the two settings that decide whether federated samples keep their own identity.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>One scrape job, three commits in an afternoon, and the two settings that decide whether federated samples keep their own identity.</p>
 <h2>The job</h2>
 <p>Partner D ran its own Prometheus collectors. The agent-based collection alongside them was meant to be retired once the dashboards and alerts moved across. The replacement is a plain <code>/federate</code> scrape against four collector addresses (port 9090, static targets, no service discovery), added to one production cluster's scrape config:</p>
 <div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;partner-d_federate&#39;</span>

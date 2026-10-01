@@ -47,7 +47,11 @@
 	// Sidebar.
 		if ($sidebar.length > 0) {
 
-			var $sidebar_a = $sidebar.find('a');
+			var $sidebar_a = $sidebar.find('a[href^="#"]');
+			// Only in-page anchors. The theme's click handler already bails on an
+			// external href, but the .each() below passes it to $() as a selector,
+			// and 'blog/index.html' throws there - which would kill the rest of
+			// this file, including the preload class removal.
 
 			$sidebar_a
 				.addClass('scrolly')

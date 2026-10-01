@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A GTP echo probe is eighteen lines of Dockerfile and one NULL check</h2><p>Teaching cloudprober to ping over GTP needed no fork of either project — it needed a one-line patch to an upstream file that dereferences a pointer it never checks.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>Teaching cloudprober to ping over GTP needed no fork of either project — it needed a one-line patch to an upstream file that dereferences a pointer it never checks.</p>
 <p>An ICMP ping to a gateway's signalling address tells you the host is up. It says nothing
 about the stack that carries subscriber sessions, because that stack listens on UDP 2123 and
 answers a different message. GTP has an echo of its own (Echo Request, Echo Response), and

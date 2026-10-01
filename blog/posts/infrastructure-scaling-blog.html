@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Scaling by one gateway at a time</h2><p>Adding capacity to the wireless estate meant adding two addresses per container to one YAML file, which is duller and more fragile than it sounds.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>Adding capacity to the wireless estate meant adding two addresses per container to one YAML file, which is duller and more fragile than it sounds.</p>
 <h2>The unit of growth</h2>
 <p>A new packet gateway on a tanker costs exactly two addresses (one peering, one not). The peering address sits inside the partner's VRF; the other sits on the core bridge, where the gateway is reachable for management and metrics. Both are written into the same site file. The peering one goes into <code>preset_containers</code>, which Ansible acts on; the non-peering one goes into a comment block, which is the register and nothing more.</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">VRF_WL_INTERNET</span><span class="p">:</span>

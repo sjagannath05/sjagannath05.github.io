@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>One base image, five instances, and every config rendered at boot</h2><p>A Diameter routing agent whose config files do not exist until the container starts, and the three failures that shape made visible.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown">
-<p>A Diameter routing agent whose config files do not exist until the container starts, and the three failures that shape made visible.</p>
 <p>Nothing in these images ships a finished config. <code>freeDiameter.conf</code>, <code>resolv.conf</code> and
 <code>fixups_config.json</code> are all generated at container start from a <code>.tpl</code> beside them, each one
 prefixed with a banner that names the template:</p>

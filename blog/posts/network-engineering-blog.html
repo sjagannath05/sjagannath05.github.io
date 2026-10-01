@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A DNS container that advertises its own addresses</h2><p>The BGP here is iBGP to the site&#x27;s own signalling router, not peering with a partner&#x27;s autonomous system — and the hard part was a templating engine that cannot iterate a list.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>The BGP here is iBGP to the site's own signalling router, not peering with a partner's autonomous system — and the hard part was a templating engine that cannot iterate a list.</p>
 <p>The APN DNS containers bind their service addresses themselves and announce them with FRR from
 inside the same container (one process tree, supervised by s6). That is why the image sits on the FRR base layer, with two flags
 turning off the base image's own address handling:</p>

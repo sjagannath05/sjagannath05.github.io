@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The generic alert was correct and useless</h2><p>Twelve per-partner DNS alerts became four generic ones, and five hours later they were twelve again for a reason that has nothing to do with Prometheus.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>Twelve per-partner DNS alerts became four generic ones, and five hours later they were twelve again for a reason that has nothing to do with Prometheus.</p>
 <p>CW-3455 looked like straightforward consolidation (twelve blocks into four). The DNS service for roaming partners had moved
 off BIND and onto CoreDNS, so the alerts had to follow, and the old set was twelve near-identical
 blocks — six per partner, each naming a job like <code>prometheus-site-c-dns-&lt;partner&gt;</code> and a

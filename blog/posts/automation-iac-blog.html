@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The address plan that lives in a YAML comment</h2><p>One Ansible variable file per site, two registers of IP addresses inside it, and nothing that checks either one against the other.</p></div> <div class="meta"><span class="published">Automation</span></div> </header> <div class="content markdown">
-<p>One Ansible variable file per site, two registers of IP addresses inside it, and nothing that checks either one against the other.</p>
 <h2>Two registers, one file</h2>
 <p>Each wireless site is a single <code>group_vars</code> file, and all of it hangs off one key (<code>cloud_router_cluster_config</code>). The files are not small: 443 lines for the EU Central site, 686 for US Central. Every tanker gets a map of VRFs, and every VRF gets a bridge subnet plus a list of containers to attach to it (name, address, one filter flag — nothing else).</p>
 <div class="codehilite"><pre><span></span><code><span class="nt">vrfs</span><span class="p">:</span>

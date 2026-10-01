@@ -33,7 +33,6 @@ host.appendChild(b);});})();</script>
         <article class="post">
           <header><div class="title"><h2>Two pipelines that tried to remember what they had done</h2><p>A SIM provisioning pipeline and a documentation image, both of which got simpler once they stopped keeping state about their own past runs.</p></div><div class="meta"><span class="published">DevOps</span></div></header>
           <div class="content markdown">
-<p>A SIM provisioning pipeline and a documentation image, both of which got simpler once they stopped keeping state about their own past runs.</p>
 <h2>SIM OTA data in git</h2>
 <p>The over-the-air data for our SIM estate lives on a vendor OTA platform, under one directory tree, and people edit it there through the platform's web interface. It is field definitions, the applet configuration tables and the SMS campaign scripts. In November 2024 that tree was imported into a repository so the server had a reviewed source (<code>fields.xml</code>, the <code>db/</code> tables, <code>bindata/</code> and <code>smsscripts/</code>), laid out exactly as on the server.</p>
 <p>The first deployment design tried to be clever about which files to push. A workflow step downloaded a <code>deployment-metadata</code> artifact from the previous successful run, read the commit it recorded, and diffed each watched path against it:</p>

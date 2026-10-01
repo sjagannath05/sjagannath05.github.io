@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Phone numbers kept as files in git</h2><p>The register of record for MSISDN stock is a directory of text files on the default branch, and an allocation is a commit.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>The register of record for MSISDN stock is a directory of text files on the default branch, and an allocation is a commit.</p>
 <h2>The model</h2>
 <p><code>stock/</code> holds the ranges that were bought. <code>used/</code> holds the allocations (one file per SIM batch, named after the batch). Allocating means running the calculator with a count and a batch name (<code>-count</code>, <code>-sim-batch</code>), which writes <code>used/&lt;batch&gt;.txt</code>, and then committing that file.</p>
 <p>The README is blunt about the two ways it goes wrong. Pull first (<code>git pull</code>, step zero), because somebody may have pushed an allocation since your last commit. Push immediately afterwards, because an allocation that exists only on your laptop will be handed out to somebody else as well.</p>

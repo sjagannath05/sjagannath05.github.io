@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A two-stage build whose only product is one binary</h2><p>Why the GTP prober image has a compiler in it, and why none of that compiler reaches production.</p></div> <div class="meta"><span class="published">Containers</span></div> </header> <div class="content markdown">
-<p>Why the GTP prober image has a compiler in it, and why none of that compiler reaches production.</p>
 <h2>The whole Dockerfile</h2>
 <div class="codehilite"><pre><span></span><code><span class="k">ARG</span><span class="w"> </span><span class="nv">CLOUDPROBER_VERSION</span><span class="o">=</span>v0.13.7
 

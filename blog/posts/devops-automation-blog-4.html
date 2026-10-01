@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Teaching a prober to speak GTP</h2><p>A thirteen-line patch to an upstream tool was the whole substance of this image; the pipeline around it was the easy part.</p></div> <div class="meta"><span class="published">DevOps</span></div> </header> <div class="content markdown">
-<p>A thirteen-line patch to an upstream tool was the whole substance of this image; the pipeline around it was the easy part.</p>
 <p>The wireless probe image is a two-stage Dockerfile. The second stage is upstream CloudProber, pinned (v0.13.7, no local changes). The first stage exists to compile one small C program and copy its binary across:</p>
 <div class="codehilite"><pre><span></span><code>FROM<span class="w"> </span>alpine:latest<span class="w"> </span>AS<span class="w"> </span>build
 RUN<span class="w"> </span>apk<span class="w"> </span>add<span class="w"> </span>musl-dev<span class="w"> </span>linux-headers<span class="w"> </span>git<span class="w"> </span>gcc<span class="w"> </span>make

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Alerts as code, and the day the generic version lost</h2><p>Two YAML files hold every production alert for a wireless estate; the interesting commits are the ones that put lines back.</p></div> <div class="meta"><span class="published">DevOps</span></div> </header> <div class="content markdown">
-<p>Two YAML files hold every production alert for a wireless estate; the interesting commits are the ones that put lines back.</p>
 <p>The alerts repository is two files and almost nothing else (no rules directory, no templates, no generator). <code>meta-dev.yml</code> and <code>meta-prod.yml</code> each map an alert name to a destination, a PromQL expression, a dwell time and a link to its resolution document:</p>
 <div class="codehilite"><pre><span></span><code>DRA_Routing_Failures:
   description: &quot;DRA is failing to route S6a requests&quot;

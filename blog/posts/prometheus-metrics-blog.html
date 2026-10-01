@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The metrics port is the whole feature</h2><p>The README gives one reason for this image to exist — exposing metrics — and the Dockerfile acts on it in a single line.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>The README gives one reason for this image to exist — exposing metrics — and the Dockerfile acts on it in a single line.</p>
 <h2>One line of metadata</h2>
 <div class="codehilite"><pre><span></span><code>FROM coredns/coredns:1.11.1
 EXPOSE 11915/tcp

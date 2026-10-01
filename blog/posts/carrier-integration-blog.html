@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>What a carrier integration looks like from the routing side</h2><p>Bringing a roaming partner up was mostly address allocation and one VRF per partner, with the Diameter work happening in somebody else&#x27;s repository.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>Bringing a roaming partner up was mostly address allocation and one VRF per partner, with the Diameter work happening in somebody else's repository.</p>
 <h2>One VRF per partner</h2>
 <p>The cloud-router estate gives every roaming partner its own VRF, its own bridge on the tanker, and a GRE tunnel to each router in the pair (two routers, so two tunnels per VRF). A partner's name appears four times in a site file: the VRF, the bridge, the Docker network, the tunnel list. Nowhere else. The isolation is the VRF itself, so there is no shared peering segment to police (and no per-partner firewall policy to maintain).</p>
 <p>Inside a partner's VRF sits a short list of containers, and the names say what the integration is made of.</p>

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Putting SIM OTA data under version control when the server is still writable</h2><p>The data that reconfigures SIM cards over the air lived on one server and nowhere else; moving it into git took 114 files and created a two-writer problem that is still there.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>The data that reconfigures SIM cards over the air lived on one server and nowhere else; moving it into git took 114 files and created a two-writer problem that is still there.</p>
 <p>SIM over-the-air provisioning is file-shaped (no API, no database). A campaign is a script sent to a card by SMS, the
 network lists it writes are binary files, and the server that sends them keeps all of it in a
 directory tree. Before this work, that tree was the only copy (no backup in git, none anywhere else).</p>

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Shipping an Elixir release I did not write</h2><p>My whole surface on this Phoenix service is a 40-line Makefile and two version files — and the thing that bit was a pin sitting in the wrong one.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>My whole surface on this Phoenix service is a 40-line Makefile and two version files — and the thing that bit was a pin sitting in the wrong one.</p>
 <h2>Who wrote what</h2>
 <p>The application is a Phoenix 1.6 PCAP extractor with 33 direct hex dependencies, clustered with
 <code>libcluster</code> over Consul and authenticating through <code>exldap</code> against LDAP. It carries no database

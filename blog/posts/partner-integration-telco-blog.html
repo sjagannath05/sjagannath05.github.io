@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>What actually differs when you onboard a Diameter partner</h2><p>Four partner integrations on one Diameter routing agent, and the per-partner delta is four config files and a Python module.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>Four partner integrations on one Diameter routing agent, and the per-partner delta is four config files and a Python module.</p>
 <p>Each partner gets its own instance directory (four of them, plus one for IMS). Everything
 else comes from one shared <code>base/</code>:</p>
 <div class="codehilite"><pre><span></span><code>instances/partner-a-dra/

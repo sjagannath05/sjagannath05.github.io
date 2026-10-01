@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Ten scrape jobs and one transposed digit</h2><p>A batch of static scrape targets, the typo that went in with them, and why nothing in the pipeline could have caught it.</p></div> <div class="meta"><span class="published">DevOps</span></div> </header> <div class="content markdown">
-<p>A batch of static scrape targets, the typo that went in with them, and why nothing in the pipeline could have caught it.</p>
 <h2>The change</h2>
 <p>Ten HSS and SMSC instances across two sites (five pairs in all) needed to appear in Prometheus. These are vendor appliances, so there is no exporter to install and no service discovery to join — the application serves its own metrics, on its own path, and the only way in is a static target (one address, typed by hand):</p>
 <div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;hss_prod_site_c_01&#39;</span>

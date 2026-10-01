@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>What a shared base image brings with it</h2><p>Moving the IMS container onto the platform&#x27;s FRR base image took an afternoon of build time and two collisions nobody had written down.</p></div> <div class="meta"><span class="published">Containers</span></div> </header> <div class="content markdown">
-<p>Moving the IMS container onto the platform's FRR base image took an afternoon of build time and two collisions nobody had written down.</p>
 <p>The IMS container runs three Kamailio servers under s6 (P-CSCF, I-CSCF and S-CSCF, all in one image), and until October 2025 it started from <code>ubuntu:24.04</code>. CW-2856 moved it onto the infrastructure team's FRR image instead, pinned by digest and not by tag:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">ARG</span><span class="w"> </span><span class="nv">BASE_IMAGE</span><span class="o">=</span>registry.internal/infra/cr-frr:frr-8-jammy-2024.10.21@sha256:d3e7308f…
 </code></pre></div>

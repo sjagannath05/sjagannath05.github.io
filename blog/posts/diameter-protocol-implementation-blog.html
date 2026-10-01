@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A Python hook on every AVP, and the double free underneath it</h2><p>Four Diameter routing agents run a Python function once per AVP of every message they relay; the interesting part is what that costs in C.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown">
-<p>Four Diameter routing agents run a Python function once per AVP of every message they relay; the interesting part is what that costs in C.</p>
 <p>The routing agents are freeDiameter with two local extensions. <code>rt_pyform</code> comes from a third-party fork of freeDiameter. It loads a Python module at startup and calls one function per AVP, for every message that passes through:</p>
 <div class="codehilite"><pre><span></span><code>def transform(appId, flags, cmdCode, HBH_ID, E2E_ID, AVP_Code,
               vendorID, value, imsi, originRealm=&quot;&quot;, routeRecord=&quot;&quot;):

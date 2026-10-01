@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Counting Diameter per subscriber when the answers carry no IMSI</h2><p>A Wireshark Lua tap that got the counts wrong twice, and the field that fixed it.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown">
-<p>A Wireshark Lua tap that got the counts wrong twice, and the field that fixed it.</p>
 <h2>The problem the field layout creates</h2>
 <p>In S6a, a request carries the subscriber identity — <code>e212.imsi</code> sits in the Authentication-Information-Request (command 318, application 16777251). The answer omits it. So "how many requests did this IMSI make, and how many did it get back" cannot be answered by reading responses, because a response does not know whose it is.</p>
 <p>That one asymmetry is the whole engineering problem, and both of my first two attempts walked into it.</p>

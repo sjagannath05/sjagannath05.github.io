@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A package that exists to add one route</h2><p>Twenty-four lines of Python wrapped around somebody else&#x27;s exporter, and the three entry points it took to get them to start.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>Twenty-four lines of Python wrapped around somebody else's exporter, and the three entry points it took to get them to start.</p>
 <h2>The whole package</h2>
 <p><code>wireless_query_exporter</code> is two files. <code>__init__.py</code> is a docstring, a version and a re-export (165 bytes); <code>main.py</code> is this:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>

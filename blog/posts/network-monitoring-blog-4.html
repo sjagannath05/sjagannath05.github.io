@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>One component, two files, and nothing that checks they agree</h2><p>Naming a network component consistently in a troubleshooting CLI took two hand-maintained lists, a TODO that is still in the tree, and no validation that either matches reality.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>Naming a network component consistently in a troubleshooting CLI took two hand-maintained lists, a TODO that is still in the tree, and no validation that either matches reality.</p>
 <p>The CLI in question fetches logs and pulls captures for a mobile core. Both halves need the
 same answer to one question: what is this component called. The answer lives in two separate files — <code>nat_table.lua</code> for
 captures, <code>sources.go</code> for logs — and the tool works only while they agree.</p>

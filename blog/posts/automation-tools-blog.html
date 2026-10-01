@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Three scripts that are not products</h2><p>A pcap fan-out, a one-line ssh loop and a YAML aligner — 180 lines between them, each with a limit worth stating.</p></div> <div class="meta"><span class="published">Automation</span></div> </header> <div class="content markdown">
-<p>A pcap fan-out, a one-line ssh loop and a YAML aligner — 180 lines between them, each with a limit worth stating.</p>
 <h2>fetch-pcap-multi.sh, 65 lines</h2>
 <p>There is an existing <code>fetch-pcap</code> tool (not mine) that pulls one capture from one source. The wrapper exists because troubleshooting a signalling path means capturing at several points at the same moment, and starting four terminals by hand loses the "same moment" part.</p>
 <p>The spec format is positional and does double duty:</p>

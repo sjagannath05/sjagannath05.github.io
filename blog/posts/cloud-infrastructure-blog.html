@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>53 gp2 volumes, a CSV, and a status that is not &quot;completed&quot;</h2><p>An EBS type migration done in two stages — inventory first, modify second — and the one API detail that decides how long it takes.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>An EBS type migration done in two stages — inventory first, modify second — and the one API detail that decides how long it takes.</p>
 <h2>The inventory</h2>
 <p><code>list_wireless_instances_volumes.sh</code> walks every region returned by <code>describe-regions</code> (all of them, every run), filters instances on a <code>tag:Name</code> prefix, and emits one CSV row per attached volume:</p>
 <div class="codehilite"><pre><span></span><code>InstanceID,InstanceName,Region,VolumeID,VolumeType,SizeGiB,IOPS,Throughput,State

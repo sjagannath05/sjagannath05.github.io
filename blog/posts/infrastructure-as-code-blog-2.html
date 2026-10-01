@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Putting SIM OTA data under git, and the assumption that broke it</h2><p>A deployment pipeline that diffs one commit back cannot retry a failed run, which is the first thing CW-1648 (November 2024) had to unlearn.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>A deployment pipeline that diffs one commit back cannot retry a failed run, which is the first thing CW-1648 (November 2024) had to unlearn.</p>
 <p>The SIM OTA data lived on one server and nowhere else. Field definitions, the provisioning
 database, and the SMS scripts that write PLMN lists and clear LOCIs on a live SIM — edited in
 place, by whoever was on the ticket, with no history. The first commit of CW-1648 (November

@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A stock gauge that counts files, not subscribers</h2><p>A daily count of unallocated MSISDNs, where the thing being counted is text files in a git repository.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>A daily count of unallocated MSISDNs, where the thing being counted is text files in a git repository.</p>
 <h2>What the workflow is</h2>
 <p><code>.github/workflows/msisdn-monitoring.yml</code> is 61 lines. It wakes on a cron (<code>0 8 * * *</code>, daily,
 plus <code>workflow_dispatch</code> so it can be run by hand), checks the repository out at <code>ref: master</code>,

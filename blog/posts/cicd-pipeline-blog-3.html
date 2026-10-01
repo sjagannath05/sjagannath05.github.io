@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The CI for a network service, when the pipeline is not yours to write</h2><p>The DNS service for the private PGWs has a two-line Dockerfile and a ten-line Makefile, and its entire delivery pipeline is a handful of declarations in YAML that somebody else executes.</p></div> <div class="meta"><span class="published">DevOps</span></div> </header> <div class="content markdown">
-<p>The DNS service for the private PGWs has a two-line Dockerfile and a ten-line Makefile, and its entire delivery pipeline is a handful of declarations in YAML that somebody else executes.</p>
 <h2>What is in the repository</h2>
 <div class="codehilite"><pre><span></span><code>FROM coredns/coredns:1.11.1
 EXPOSE 11915/tcp

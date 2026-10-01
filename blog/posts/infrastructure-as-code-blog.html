@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Adding a leaf to someone else&#x27;s infrastructure repository</h2><p>What it is like to contribute scrape configuration to a monitoring repository you do not own, across one layout change and one deprecation.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>What it is like to contribute scrape configuration to a monitoring repository you do not own, across one layout change and one deprecation.</p>
 <h2>Where a scrape job lives</h2>
 <p>The infrastructure team designed this repository and runs it. My contribution is scrape configuration and nothing else — four pull requests between December 2024 and February 2026 (#297, #365, #414, #516), each adding targets so that services I was responsible for showed up in metrics someone else collected.</p>
 <p>In 2024 the file was a Go template, one per cluster:</p>

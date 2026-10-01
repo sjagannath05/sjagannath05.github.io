@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 /* ---------------------------------------------------------------------------
    Layout: the index reads as a capture list — hairline-separated rows with a
@@ -8,16 +8,16 @@
 
 :root {
   /* neutrals, biased cool so they sit under an indigo accent deliberately */
-  --paper:      #F6F7F9;
+  --paper:      #FAFAF9;
   --paper-2:    #FFFFFF;
-  --ink:        #171B21;
-  --ink-2:      #39414D;
-  --ink-3:      #5E6672;
-  --rule:       #DFE3E8;
-  --rule-soft:  #ECEFF2;
-  --accent:     #2E3F6E;
-  --accent-ink: #1E2B4F;
-  --code-bg:    #F0F2F5;
+  --ink:        #16181C;
+  --ink-2:      #3C4046;
+  --ink-3:      #62676E;
+  --rule:       #E2E1DE;
+  --rule-soft:  #EDECE9;
+  --accent:     #8A5A1E;
+  --accent-ink: #6B4415;
+  --code-bg:    #F1F0ED;
 
   /* category hues, held at low saturation so eight of them read as one system */
   --c-infra:      #2E5C8A;
@@ -29,8 +29,8 @@
   --c-security:   #8A3A3A;
   --c-other:      #5E6672;
 
-  --font-read: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-ui:   'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-read: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-ui:   'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   --measure: 68ch;
@@ -39,16 +39,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper:      #101419;
-    --paper-2:    #171C23;
-    --ink:        #E7EAEE;
-    --ink-2:      #B3BBC6;
-    --ink-3:      #7E8794;
-    --rule:       #262D36;
-    --rule-soft:  #1E242B;
-    --accent:     #93AEDC;
-    --accent-ink: #B9CCEC;
-    --code-bg:    #1A1F26;
+    --paper:      #0F1113;
+    --paper-2:    #15181B;
+    --ink:        #E9E7E4;
+    --ink-2:      #B6B3AE;
+    --ink-3:      #85837E;
+    --rule:       #272A2E;
+    --rule-soft:  #1D2023;
+    --accent:     #E0A96D;
+    --accent-ink: #EFC18C;
+    --code-bg:    #191C1F;
 
     --c-infra:      #7FA8D8;
     --c-devops:     #5FB8A8;
@@ -63,16 +63,16 @@
 }
 
 :root[data-theme="dark"] {
-  --paper:      #101419;
-  --paper-2:    #171C23;
-  --ink:        #E7EAEE;
-  --ink-2:      #B3BBC6;
-  --ink-3:      #7E8794;
-  --rule:       #262D36;
-  --rule-soft:  #1E242B;
-  --accent:     #93AEDC;
-  --accent-ink: #B9CCEC;
-  --code-bg:    #1A1F26;
+  --paper:      #0F1113;
+  --paper-2:    #15181B;
+  --ink:        #E9E7E4;
+  --ink-2:      #B6B3AE;
+  --ink-3:      #85837E;
+  --rule:       #272A2E;
+  --rule-soft:  #1D2023;
+  --accent:     #E0A96D;
+  --accent-ink: #EFC18C;
+  --code-bg:    #191C1F;
 
   --c-infra:      #7FA8D8;
   --c-devops:     #5FB8A8;
@@ -426,3 +426,32 @@ body.single article.post > header .meta { margin-top: 1.25rem; }
   :root[data-theme="light"] .theme-toggle .i-sun { display: none; }
   :root[data-theme="light"] .theme-toggle .i-moon { display: block; }
 }
+
+
+/* ---- identity: mono-led headings -------------------------------------------
+   The personal site and the consultancy site were sharing one type system and
+   one accent, so they read as the same brand. This site now leads with the
+   mono face and an amber accent; the consultancy keeps the editorial serif and
+   the indigo. Figures are tabular so commit counts line up in a column. */
+h1, h2, h3, h4,
+.eyebrow, .t-name, .work-role, .work-metric, .theme-toggle {
+  font-family: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  letter-spacing: -0.015em;
+}
+.eyebrow, .work-role { letter-spacing: 0.08em; text-transform: uppercase; }
+.work-metric, .stat, table td, table th { font-variant-numeric: tabular-nums; }
+
+/* These four selectors are more specific than the generic h1-h4 rule above, so
+   they have to be restated to carry the mono face. Body prose stays in the sans
+   - the mono is for titles and section headings, not for reading paragraphs. */
+#header h1,
+body:not(.single) article.post .title h2,
+body.single article.post > header .title h2,
+.content.markdown h2,
+.content.markdown h3 {
+  font-family: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  letter-spacing: -0.02em;
+}
+body.single article.post > header .title h2 { line-height: 1.22; }
+.content.markdown h2 { font-size: 1.12rem; margin-top: 2.2rem; }
+.content.markdown h3 { font-size: 1rem; }

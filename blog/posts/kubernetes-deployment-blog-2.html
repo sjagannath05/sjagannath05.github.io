@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A one-line move off Kubernetes, reverted twenty minutes later</h2><p>The commit that leaves Kubernetes and the commit that comes back are twenty minutes apart, and the real change was in Vault.</p></div> <div class="meta"><span class="published">Containers</span></div> </header> <div class="content markdown">
-<p>The commit that leaves Kubernetes and the commit that comes back are twenty minutes apart, and the real change was in Vault.</p>
 <p>The service is small enough to describe exactly (one Python module, 23 lines). It wraps the open-source <code>query-exporter</code>,
 which runs SQL against a Postgres read replica and publishes the results as Prometheus gauges.
 My addition to it is 23 lines of Python:</p>

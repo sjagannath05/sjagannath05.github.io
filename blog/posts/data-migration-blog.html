@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>114 files into git, and the change detection I threw away</h2><p>The SIM OTA data was a working directory on one server; putting it under version control took one commit, and the deploy path took two attempts.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
-<p>The SIM OTA data was a working directory on one server; putting it under version control took one commit, and the deploy path took two attempts.</p>
 <p>The SIM over-the-air provisioning server keeps its configuration as files in a home directory — field definitions (<code>fields.xml</code>), binary payloads (<code>bindata/</code>), and the campaign scripts that drive a session (<code>db/</code>, <code>smsscripts/</code>). Nothing was in version control, so CW-1648 began by copying the lot in. One commit, 29 November 2024, 114 files and about 4.9 MB:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">ota-data/simota/smsscripts/   73 files   (71 .script)</span>
 <span class="n">ota-data/simota/bindata/      20 files   (17 .dat, 2 .bin)</span>

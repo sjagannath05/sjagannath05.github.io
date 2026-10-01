@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Off CoreDNS, then back to it with two plugins compiled in</h2><p>Replacing a partner&#x27;s DNS redirector containers took three attempts, and the middle one was a fourteen-week detour through BIND.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>Replacing a partner's DNS redirector containers took three attempts, and the middle one was a fourteen-week detour through BIND.</p>
 <p>The thing being replaced was a pair of redirector containers supplied by Partner D, one per
 roaming partner. The replacement had two jobs: serve APN zones
 (<code>apn.epc.mnc210.mcc311.3gppnetwork.org</code> and four more) to an external partner, and advertise

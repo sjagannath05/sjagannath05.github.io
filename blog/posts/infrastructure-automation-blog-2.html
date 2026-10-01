@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The odd architecture in the fleet was my laptop</h2><p>Cross-platform deployment usually means the servers differ; here the servers were identical and the build host was the exception.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
-<p>Cross-platform deployment usually means the servers differ; here the servers were identical and the build host was the exception.</p>
 <p><code>wireless-tools</code> is a Go repository of small EPC troubleshooting binaries — one directory per
 tool under <code>cmd/</code>, with the Makefile deriving the list instead of carrying it:</p>
 <div class="codehilite"><pre><span></span><code><span class="nv">TOOLS</span><span class="o">=</span><span class="k">$(</span>notdir<span class="w"> </span><span class="k">$(</span>wildcard<span class="w"> </span>./cmd/*<span class="k">))</span>

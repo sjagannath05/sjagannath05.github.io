@@ -19,7 +19,6 @@ b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
   </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Pushing one number from a job that lives ten seconds</h2><p>A scheduled CI job cannot be scraped, so the metric travels the other way — and every surprise waits on the receiving end.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
-<p>A scheduled CI job cannot be scraped, so the metric travels the other way — and every surprise waits on the receiving end.</p>
 <h2>The whole push</h2>
 <p>The MSISDN stock workflow runs daily, counts one number and exits (one <code>curl</code>, one gauge, no
 exporter and no port). The runner is gone long before any scrape interval comes round. A
