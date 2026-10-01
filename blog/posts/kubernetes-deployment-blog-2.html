@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>From Kubernetes to CI Pipeline: A Strategic Infrastructure Migration — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>A one-line move off Kubernetes, reverted twenty minutes later — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,176 +18,89 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>From Kubernetes to CI Pipeline: A Strategic Infrastructure Migration</h2><p>Sometimes the most important architectural decisions are the ones that go against conventional wisdom. This post chronicles a strategic decision to migrate from Kubernetes deployment to CI pipeline-based deployment, the reasoning behind it, and the lessons learned.</p></div> <div class="meta"><span class="published">Containers</span></div> </header> <div class="content markdown"><h1>From Kubernetes to CI Pipeline: A Strategic Infrastructure Migration</h1>
-<h2>Introduction</h2>
-<p>Sometimes the most important architectural decisions are the ones that go against conventional wisdom. This post chronicles a strategic decision to migrate from Kubernetes deployment to CI pipeline-based deployment, the reasoning behind it, and the lessons learned.</p>
-<h2>The Original Setup</h2>
-<p>Our wireless monitoring service initially followed standard microservice deployment patterns:</p>
-<ul>
-<li>Kubernetes pods across multiple datacenters (SITE-A, SITE-B)</li>
-<li>Traditional service mesh architecture</li>
-<li>Complex networking and service discovery</li>
-<li>Multi-replica deployments for high availability</li>
-</ul>
-<h2>The Inflection Point</h2>
-<p>During development, several factors made us reconsider our deployment strategy:</p>
-<h3>1. Service Classification Analysis</h3>
-<p>The wireless query exporter was classified as a <strong>non-critical service</strong>:
-- No direct customer impact if temporarily unavailable
-- Monitoring data, not core business logic
-- Recovery time measured in minutes, not seconds</p>
-<h3>2. Operational Complexity</h3>
-<p>Kubernetes deployment introduced unnecessary complexity:
-- Multiple datacenter coordination
-- Network policy management<br />
-- Service mesh overhead
-- Resource allocation across clusters</p>
-<h3>3. Resource Efficiency</h3>
-<p>Multi-replica deployment was overkill:
-- Single replica could handle the workload efficiently
-- Database queries were the bottleneck, not application processing
-- Minimal memory and CPU requirements</p>
-<h2>The Migration Strategy</h2>
-<h3>Phase 1: Infrastructure Assessment</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Before: Multi-cluster deployment</span>
-meta-prod.yml:
-<span class="w"> </span>replicas:<span class="w"> </span><span class="m">2</span>
-<span class="w"> </span>clusters:<span class="w"> </span><span class="o">[</span>site-a,<span class="w"> </span>site-b<span class="o">]</span> <span class="c1"># After: Single datacenter optimization </span>
-meta-prod.yml:
-<span class="w"> </span>replicas:<span class="w"> </span><span class="m">1</span>
-<span class="w"> </span>clusters:<span class="w"> </span><span class="o">[</span>site-a<span class="o">]</span>
-</code></pre></div> <h3>Phase 2: Deployment Pipeline Transition</h3>
-<p>The key commit that changed everything:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Jenkinsfile modification</span>
-<span class="l l-Scalar l-Scalar-Plain">pipeline {</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">agent any</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stages {</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stage(&#39;Deploy&#39;) {</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">steps {</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">// Switched from kubectl to CI pipeline deployment</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sh &#39;deploy-via-pipeline.sh&#39;</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">}</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">}</span>
-<span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">}</span>
-<span class="l l-Scalar l-Scalar-Plain">}</span>
-</code></pre></div> <h3>Phase 3: Secret Management Optimization</h3>
-<p>During migration, we also improved secret management:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Before: Manual secret definitions</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">containers</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
-<span class="w"> </span><span class="nt">env</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DB_PASSWORD</span>
-<span class="w"> </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;hardcoded-value&quot;</span><span class="w"> </span><span class="c1"># Bad practice</span> <span class="c1"># After: Vault integration</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">containers</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
-<span class="w"> </span><span class="nt">envFrom</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretRef</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wireless-secrets</span><span class="w"> </span><span class="c1"># Vault-managed</span>
-</code></pre></div> <h2>Technical Implementation Details</h2>
-<h3>CI Pipeline Deployment</h3>
-<p>The new deployment strategy uses:
-- <strong>Jenkins pipeline</strong> for orchestration
-- <strong>Docker containers</strong> for consistency
-- <strong>Environment-specific configurations</strong> for flexibility
-- <strong>Health check integration</strong> for reliability</p>
-<h3>Configuration Management</h3>
-<p>Streamlined configuration management:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># main.py - Simplified health monitoring</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span> <span class="n">application</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_health</span><span class="p">)</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
-</code></pre></div> <h3>Monitoring Integration</h3>
-<p>Maintained monitoring capabilities:
-- Prometheus metrics endpoint
-- Health check endpoint
-- Integration with existing alerting systems</p>
-<h2>Results &amp; Impact</h2>
-<h3>1. <strong>Reduced Complexity</strong></h3>
-<ul>
-<li>50% reduction in deployment configuration</li>
-<li>Simplified troubleshooting and debugging</li>
-<li>Faster deployment cycles</li>
-</ul>
-<h3>2. <strong>Improved Reliability</strong></h3>
-<ul>
-<li>Single point of failure, but faster recovery</li>
-<li>Simplified rollback procedures</li>
-<li>Clearer error diagnosis</li>
-</ul>
-<h3>3. <strong>Resource Efficiency</strong></h3>
-<ul>
-<li>50% reduction in resource allocation</li>
-<li>Lower operational overhead</li>
-<li>Simplified capacity planning</li>
-</ul>
-<h3>4. <strong>Operational Benefits</strong></h3>
-<ul>
-<li>Faster deployments (minutes vs. hours)</li>
-<li>Simpler monitoring and alerting</li>
-<li>Reduced team cognitive load</li>
-</ul>
-<h2>When This Strategy Makes Sense</h2>
-<p>This migration strategy works well for:</p>
-<h3>✅ <strong>Good Candidates</strong></h3>
-<ul>
-<li>Non-critical services</li>
-<li>Low-traffic applications</li>
-<li>Monitoring and logging services</li>
-<li>Development and staging environments</li>
-<li>Services with simple scaling requirements</li>
-</ul>
-<h3>❌ <strong>Not Recommended For</strong></h3>
-<ul>
-<li>Customer-facing APIs</li>
-<li>High-availability requirements</li>
-<li>Services requiring auto-scaling</li>
-<li>Complex networking requirements</li>
-<li>Stateful applications requiring coordination</li>
-</ul>
-<h2>Lessons Learned</h2>
-<h3>1. <strong>Right-Size Your Architecture</strong></h3>
-<p>Not every service needs the full complexity of microservice architecture. Match your deployment strategy to your service requirements.</p>
-<h3>2. <strong>Consider Operational Overhead</strong></h3>
-<p>Kubernetes is powerful but comes with operational complexity. For some services, simpler deployment strategies provide better ROI.</p>
-<h3>3. <strong>Security Doesn't Have to Suffer</strong></h3>
-<p>We maintained security best practices (Vault integration, secret management) while simplifying deployment.</p>
-<h3>4. <strong>Monitoring Remains Critical</strong></h3>
-<p>Regardless of deployment strategy, proper monitoring and health checks are essential.</p>
-<h2>Migration Checklist</h2>
-<p>If you're considering a similar migration:</p>
-<ul>
-<li>[ ] <strong>Assess service criticality</strong> - Is high availability required?</li>
-<li>[ ] <strong>Evaluate traffic patterns</strong> - Can a single instance handle the load?</li>
-<li>[ ] <strong>Review dependencies</strong> - Are there complex networking requirements?</li>
-<li>[ ] <strong>Consider team expertise</strong> - What's the operational complexity preference?</li>
-<li>[ ] <strong>Plan rollback strategy</strong> - How quickly can you revert if needed?</li>
-<li>[ ] <strong>Update monitoring</strong> - Ensure observability during transition</li>
-<li>[ ] <strong>Test thoroughly</strong> - Validate behavior in staging first</li>
-</ul>
-<h2>Alternative Approaches</h2>
-<p>Other options we considered:</p>
-<ol>
-<li><strong>Kubernetes with minimal resources</strong> - Stay in K8s but reduce replicas</li>
-<li><strong>Serverless deployment</strong> - Functions for periodic metric collection</li>
-<li><strong>Bare metal deployment</strong> - Direct server deployment</li>
-<li><strong>Hybrid approach</strong> - K8s for prod, CI pipeline for dev/staging</li>
-</ol>
-<h2>Future Considerations</h2>
-<p>This decision isn't permanent. We'll reassess if:
-- Service becomes business-critical
-- Traffic patterns change significantly
-- Team operational preferences evolve
-- Technology landscape shifts</p>
-<h2>Conclusion</h2>
-<p>The migration from Kubernetes to CI pipeline deployment demonstrates that <strong>the best architecture is the one that matches your actual requirements</strong>, not necessarily the most sophisticated one.</p>
-<p>Key takeaways:
-- <strong>Match complexity to requirements</strong> - Don't over-engineer
-- <strong>Consider operational overhead</strong> - Simple can be better
-- <strong>Maintain observability</strong> - Monitoring remains crucial regardless of deployment strategy
-- <strong>Stay flexible</strong> - Architectural decisions can evolve</p>
-<p>Sometimes stepping back from cutting-edge solutions leads to more maintainable, efficient systems. The goal isn't to use the newest technology—it's to solve business problems effectively.</p>
-<hr />
-<p><em>This migration reduced deployment complexity by 50% while maintaining service reliability and improving team velocity. Sometimes the best path forward is intentionally simple.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A one-line move off Kubernetes, reverted twenty minutes later</h2><p>The commit that leaves Kubernetes and the commit that comes back are twenty minutes apart, and the real change was in Vault.</p></div> <div class="meta"><span class="published">Containers</span></div> </header> <div class="content markdown">
+<p>The commit that leaves Kubernetes and the commit that comes back are twenty minutes apart, and the real change was in Vault.</p>
+<p>The service is small enough to describe exactly (one Python module, 23 lines). It wraps the open-source <code>query-exporter</code>,
+which runs SQL against a Postgres read replica and publishes the results as Prometheus gauges.
+My addition to it is 23 lines of Python:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span>
+        <span class="n">application</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_health</span><span class="p">)</span>
+        <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_health</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">})</span>
+</code></pre></div>
+
+<p>That endpoint exists because the deployment platform needs something to poll. Everything else here
+is configuration — three YAML files (<code>databases.yaml</code>, <code>queries.yaml</code>, <code>metrics.yaml</code>) and a deploy
+descriptor. The descriptor asked for 32 MiB of memory, a 64 MiB limit and 100 millicores; it also
+set <code>instances: 1</code>, <code>strategy: simple</code> and <code>auto_revert: no</code>.</p>
+<h2>The evening of 2 September</h2>
+<p>The sequence in the log, in order, over about two hours (all IST):</p>
+<div class="codehilite"><pre><span></span><code><span class="mf">19</span><span class="p">:</span><span class="mf">50</span><span class="w">  </span><span class="n">Update</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">prod</span><span class="w"> </span><span class="n">k8s</span><span class="w"> </span><span class="n">clusters</span>
+<span class="mf">20</span><span class="p">:</span><span class="mf">22</span><span class="w">  </span><span class="c1">remove site-a from deployment of pods</span>
+<span class="mf">20</span><span class="p">:</span><span class="mf">46</span><span class="w">  </span><span class="n">moved</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="n">cipipeline</span><span class="w"> </span><span class="kr">for</span><span class="w"> </span><span class="n">deployment</span><span class="w"> </span><span class="err">[</span><span class="n">instead</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">kubernetes</span><span class="err">]</span>
+<span class="mf">21</span><span class="p">:</span><span class="mf">06</span><span class="w">  </span><span class="n">re</span><span class="o">-</span><span class="n">add</span><span class="w"> </span><span class="n">site</span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">k8s</span><span class="w"> </span><span class="n">after</span><span class="w"> </span><span class="n">adding</span><span class="w"> </span><span class="n">secrets</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">vault</span>
+<span class="mf">21</span><span class="p">:</span><span class="mf">24</span><span class="w">  </span><span class="n">Add</span><span class="w"> </span><span class="n">secrets</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">env</span>
+<span class="mf">22</span><span class="p">:</span><span class="mf">07</span><span class="w">  </span><span class="n">add</span><span class="w"> </span><span class="kr">read</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="c1">remove manual secrets definition</span>
+<span class="mf">22</span><span class="p">:</span><span class="mf">55</span><span class="w">  </span><span class="n">revert</span><span class="w"> </span><span class="kr">to</span><span class="w"> </span><span class="n">secrets</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">env</span>
+</code></pre></div>
+
+<p>The middle commit is the one the title of this post would have you believe in. It is one line:</p>
+<div class="codehilite"><pre><span></span><code><span class="nd">@Library</span><span class="o">(</span><span class="s2">&quot;…/infra-ci-pipelines@latest&quot;</span><span class="o">)</span><span class="w"> </span><span class="n">_</span>
+<span class="o">-</span><span class="n">kubernetes</span><span class="w"> </span><span class="o">{</span>
+<span class="o">+</span><span class="n">ciPipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">     </span><span class="n">service</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;wireless-query-exporter&quot;</span>
+<span class="w"> </span><span class="o">}</span>
+</code></pre></div>
+
+<p>Twenty minutes later it went back, and the commit message says why ("after adding secrets in
+vault"). The pod was not failing because Kubernetes was the wrong shape for the workload. It was failing because the
+Postgres credentials were absent from Vault for the second cluster (site-a, added that evening).
+Switching the deployment model is the kind of fix that looks adjacent to the problem while
+touching none of it. The thing that actually changed was six Vault paths mapped to environment variables:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">vault</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">…/postgres-wireless/wireless_manager username | WIRELESS_USER;</span>
+<span class="w">      </span><span class="no">…/postgres-wireless/wireless_manager password | WIRELESS_PASSWORD;</span>
+<span class="w">      </span><span class="no">…/postgres-wireless/wireless_manager replica_host | WIRELESS_HOST;</span>
+</code></pre></div>
+
+<p>The two commits after that are the same mistake in miniature. <code>secrets_from: env</code> became
+<code>secrets_from: file</code>, the explicit four-name <code>secret:</code> list was deleted, and then <code>file</code> became
+<code>env</code> again at 22:55. Nothing was learned in between — only which of the two the platform
+supports for this service.</p>
+<h2>What the real decision was</h2>
+<p>It came the next day, under CW-2659, as two one-line diffs (prod first, dev after). <code>k8s_clusters</code> in production
+went from <code>["backend-site-a-prod", "backend-site-b-prod"]</code> to <code>["backend-site-a-prod"]</code>, and dev
+followed a few hours later. The commit message is the whole argument: <em>not a critical service -
+1 replica is enough</em>.</p>
+<p>That is defensible here for a reason specific to what the service does. Its headline metric
+(<code>wireless_available_sim_card_public_ips</code>) feeds exactly one alert:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">min</span><span class="o">(</span><span class="nv">wireless_available_sim_card_public_ips</span><span class="p">{</span><span class="nl">app</span><span class="o">=</span><span class="p">&quot;</span><span class="s">query-exporter</span><span class="p">&quot;}</span><span class="o">)</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="o">(</span><span class="nv">region</span><span class="o">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">20</span>
+</code></pre></div>
+
+<p>Fewer than twenty spare public IPs in a region means provision more ranges — a deadline measured
+in days. An exporter down for ten minutes loses ten minutes of samples from a slow gauge, and nothing
+downstream notices. A second replica buys redundancy for a number nobody reads in real time; it
+also costs a second set of credentials in a second cluster, which is precisely what had broken
+the night before.</p>
+<h2>The gap that was still open</h2>
+<p>Queries and metrics are declared in separate files (<code>queries.yaml</code>, <code>metrics.yaml</code>) and have to
+agree by name. Nothing checked that. Rename a query without renaming its metric and the exporter starts cleanly, scrapes
+cleanly, and exports nothing — the alert above then evaluates against an empty vector and stays
+silent, which reads as "plenty of IPs". CW-2860 added <code>validate_config.py</code> (335 lines) to fail the
+build on a mismatch instead of discovering it when a region runs dry.</p>
+<h2>What is left of it now</h2>
+<p>Almost none of the deployment configuration I argued about survives. A colleague migrated the
+repository from Jenkins to GitHub Actions in August 2026, and the entire <code>deploy:</code> block left
+<code>meta-prod.yml</code> with it — no <code>k8s_clusters</code>, no <code>instances</code>, no <code>strategy</code>. What remains is three
+blocks — the Vault mapping, <code>promote_to_prod: mode: always</code>, and a dependency line naming the
+Postgres replica.</p>
+<p>So the honest version of this post is not a migration story. One line switched the deployment model
+and one switched it back; the credentials were the fault throughout. The only durable decision
+was one replica in one datacentre, because a gauge that moves in days does not earn two.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--coredns-custom-implementation-blog.html">Building Custom CoreDNS Solutions for Enterprise Infrastructure</a> <span class=\"published\">Infra</span></li>
 <li><a href="../posts/project--docker-infrastructure-blog.html">Containerizing DNS Services: Docker Infrastructure for Enterprise Networks</a> <span class=\"published\">Containers</span></li>
 <li><a href="../posts/project--prometheus-metrics-blog.html">Implementing Prometheus Metrics for DNS Services: A Complete Observability Strategy</a> <span class=\"published\">Monitoring</span></li>

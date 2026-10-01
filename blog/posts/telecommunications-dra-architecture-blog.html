@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Building Scalable Telecommunications Infrastructure: A Deep Dive into DRA Architecture — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>One base image, five instances, and every config rendered at boot — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,135 +18,70 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Building Scalable Telecommunications Infrastructure: A Deep Dive into DRA Architecture</h2><p>In the rapidly evolving telecommunications landscape, the ability to seamlessly connect multiple network partners while maintaining high availability and performance is crucial. During my work on the Wireless Service OmniTouch DRA (Diameter Routing Agent) project, I had the opportunity to design and implement a scalable, multi-partner telecommunications infrastructure that serves as the backbone for modern wireless communications.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown"><h1>Building Scalable Telecommunications Infrastructure: A Deep Dive into DRA Architecture</h1>
-<h2>Introduction</h2>
-<p>In the rapidly evolving telecommunications landscape, the ability to seamlessly connect multiple network partners while maintaining high availability and performance is crucial. During my work on the Wireless Service OmniTouch DRA (Diameter Routing Agent) project, I had the opportunity to design and implement a scalable, multi-partner telecommunications infrastructure that serves as the backbone for modern wireless communications.</p>
-<h2>What is a Diameter Routing Agent (DRA)?</h2>
-<p>A Diameter Routing Agent is a critical component in telecommunications networks that acts as an intermediary for Diameter protocol messages between network elements. Think of it as an intelligent traffic director for telecommunications data, routing messages between Home Subscriber Servers (HSS), Mobility Management Entities (MME), and various network partners based on complex routing rules and policies.</p>
-<h2>The Challenge: Multi-Partner Integration</h2>
-<p>The telecommunications industry operates on partnerships. Network operators must seamlessly connect with multiple partners - Partner A, Partner B, Partner E - each with their own technical requirements, protocols, and configurations. The challenge was designing an architecture that could:</p>
-<ul>
-<li>Support multiple telecommunications partners simultaneously</li>
-<li>Maintain high availability and performance</li>
-<li>Allow rapid onboarding of new partners</li>
-<li>Ensure secure and reliable message routing</li>
-<li>Simplify operational maintenance</li>
-</ul>
-<h2>Architectural Solution: Modular DRA Design</h2>
-<h3>Core Architecture Principles</h3>
-<p><strong>1. Instance-Based Modularity</strong>
-Instead of monolithic configuration, I designed a modular architecture where each partner gets their own DRA instance:
-- <code>partner-a-dra/</code> - Partner A partner integration
-- <code>partner-b-dra/</code> - Partner B partner integration<br />
-- <code>partner-e-dra/</code> - Partner E partner integration
-- <code>partner-c-dra/</code> - Internal Partner C routing</p>
-<p><strong>2. Template-Driven Configuration</strong>
-Each DRA instance uses templated configurations allowing:</p>
-<div class="codehilite"><pre><span></span><code>instances/
-├── partner-dra/ ├── configs/etc/freeDiameter/ │ ├── freeDiameter.conf.tpl │ ├── rt_default.conf │ └── acl_wl.conf ├── Dockerfile ├── Jenkinsfile └── Makefile
-</code></pre></div> <p><strong>3. Containerized Deployment</strong>
-Every DRA instance is fully containerized with Docker, enabling:
-- Consistent deployment across environments
-- Easy scaling and resource management
-- Environment isolation
-- Simplified updates and rollbacks</p>
-<h2>Technical Implementation Deep Dive</h2>
-<h3>FreeDiameter Protocol Configuration</h3>
-<p>The heart of each DRA instance is its FreeDiameter configuration. Here's how I approached the complex protocol requirements:</p>
-<p><strong>Peer Configuration Management:</strong></p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Example from _Transforms.py</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">transform_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">peer_info</span><span class="p">):</span>
-<span class="w"> </span><span class="sd">&quot;&quot;&quot;Transform Diameter messages based on routing requirements&quot;&quot;&quot;</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">application_id</span> <span class="o">==</span> <span class="n">DIAMETER_S6A</span><span class="p">:</span> <span class="k">return</span> <span class="n">handle_s6a_routing</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">peer_info</span><span class="p">)</span> <span class="k">elif</span> <span class="n">message</span><span class="o">.</span><span class="n">application_id</span> <span class="o">==</span> <span class="n">DIAMETER_CX</span><span class="p">:</span> <span class="k">return</span> <span class="n">handle_cx_routing</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">peer_info</span><span class="p">)</span>
-</code></pre></div> <p><strong>Routing Logic Implementation:</strong>
-- Dynamic routing based on message content
-- Fallback mechanisms for partner unavailability<br />
-- Load balancing across multiple peer connections
-- Support for both IPSec and clear text connections</p>
-<h3>Container Orchestration Strategy</h3>
-<p>Each partner DRA follows a consistent containerization pattern:</p>
-<p><strong>Multi-Stage Docker Builds:</strong></p>
-<div class="codehilite"><pre><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="s">base-image:latest</span>
-<span class="k">COPY</span><span class="w"> </span>configs/<span class="w"> </span>/etc/
-<span class="k">RUN</span><span class="w"> </span>configure-freediameter
-<span class="k">EXPOSE</span><span class="w"> </span><span class="s">3868</span>
-<span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/etc/services.d/freeDiameter/run&quot;</span><span class="p">]</span>
-</code></pre></div> <p><strong>Environment-Specific Configurations:</strong>
-- <code>meta-dev.yml</code> - Development environment settings
-- <code>meta-prod.yml</code> - Production environment settings
-- Template variables for dynamic configuration</p>
-<h2>Operational Excellence Through Automation</h2>
-<h3>CI/CD Pipeline Implementation</h3>
-<p>Every DRA instance includes comprehensive automation:</p>
-<p><strong>Jenkins Pipeline Features:</strong>
-- Automated testing of configuration changes
-- Docker image building and tagging
-- Environment-specific deployments
-- Rollback capabilities</p>
-<p><strong>Build System Optimization:</strong>
-- Makefile-based build automation
-- Dependency management
-- Resource optimization</p>
-<h3>Monitoring and Reliability</h3>
-<p><strong>Health Check Implementation:</strong>
-- Container health monitoring
-- Peer connectivity verification
-- Message routing validation
-- Performance metrics collection</p>
-<h2>Real-World Impact and Results</h2>
-<h3>Operational Improvements</h3>
-<p><strong>Simplified Partner Onboarding:</strong>
-- Reduced new partner integration time from weeks to days
-- Standardized configuration templates
-- Automated testing and validation</p>
-<p><strong>Enhanced Reliability:</strong>
-- Eliminated single points of failure
-- Implemented intelligent routing fallbacks
-- Achieved 99.9% uptime across all partner connections</p>
-<p><strong>Maintenance Efficiency:</strong>
-- Reduced operational complexity through standardization
-- Simplified troubleshooting with isolated instances
-- Faster deployment and rollback procedures</p>
-<h3>Performance Metrics</h3>
-<ul>
-<li><strong>Message Throughput:</strong> Handling 10K+ Diameter messages per second per instance</li>
-<li><strong>Latency Optimization:</strong> Sub-100ms routing decisions</li>
-<li><strong>Partner Connections:</strong> Successfully managing 50+ active peer connections</li>
-<li><strong>High Availability:</strong> Zero downtime deployments achieved</li>
-</ul>
-<h2>Key Lessons Learned</h2>
-<h3>Architecture Design</h3>
-<p><strong>1. Modularity is Key</strong>
-Breaking down complex telecommunications systems into manageable, modular components significantly improves maintainability and scalability.</p>
-<p><strong>2. Template-Driven Configuration</strong>
-Using configuration templates reduces errors and ensures consistency across multiple deployments while allowing environment-specific customization.</p>
-<p><strong>3. Container-First Approach</strong>
-Designing with containerization from the ground up simplifies deployment, scaling, and maintenance operations.</p>
-<h3>Operational Considerations</h3>
-<p><strong>4. Automation is Essential</strong>
-Comprehensive CI/CD pipelines are crucial for managing complex telecommunications infrastructure at scale.</p>
-<p><strong>5. Monitoring and Observability</strong>
-Deep visibility into message routing and system performance is essential for maintaining telecommunications-grade reliability.</p>
-<h2>Future Considerations</h2>
-<h3>Scaling Strategies</h3>
-<p><strong>Horizontal Scaling:</strong>
-- Kubernetes orchestration for automatic scaling
-- Load balancer integration for traffic distribution
-- Multi-region deployment strategies</p>
-<p><strong>Advanced Features:</strong>
-- Machine learning-based routing optimization
-- Real-time traffic analytics
-- Predictive maintenance capabilities</p>
-<h3>Technology Evolution</h3>
-<p><strong>Cloud-Native Migration:</strong>
-- Service mesh integration for inter-service communication
-- Serverless functions for message transformation
-- Cloud provider integration for global deployment</p>
-<h2>Conclusion</h2>
-<p>Building scalable telecommunications infrastructure requires careful attention to modularity, automation, and operational excellence. The DRA architecture implemented demonstrates how modern DevOps practices can be applied to traditional telecommunications challenges, resulting in more reliable, maintainable, and scalable systems.</p>
-<p>The key to success lies in understanding both the technical requirements of telecommunications protocols and the operational needs of modern infrastructure management. By combining deep protocol knowledge with cloud-native design principles, it's possible to build systems that not only meet today's requirements but are positioned for future growth and evolution.</p>
-<p>For telecommunications engineers looking to modernize their infrastructure, the lessons learned from this project highlight the importance of modular design, comprehensive automation, and operational excellence in building systems that can scale with business demands while maintaining the reliability that telecommunications services require.</p>
-<hr />
-<p><em>This architecture has successfully handled millions of Diameter messages, integrated multiple telecommunications partners, and maintained 99.9% uptime across production environments. The modular design continues to enable rapid partner onboarding and system scaling as business requirements evolve.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>One base image, five instances, and every config rendered at boot</h2><p>A Diameter routing agent whose config files do not exist until the container starts, and the three failures that shape made visible.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown">
+<p>A Diameter routing agent whose config files do not exist until the container starts, and the three failures that shape made visible.</p>
+<p>Nothing in these images ships a finished config. <code>freeDiameter.conf</code>, <code>resolv.conf</code> and
+<code>fixups_config.json</code> are all generated at container start from a <code>.tpl</code> beside them, each one
+prefixed with a banner that names the template:</p>
+<div class="codehilite"><pre><span></span><code>#<span class="w"> </span><span class="k">DO</span><span class="w"> </span><span class="nv">NOT</span><span class="w"> </span><span class="nv">EDIT</span><span class="w"> </span><span class="nv">THIS</span><span class="w"> </span><span class="nv">FILE</span>
+#<span class="w"> </span><span class="nv">This</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="nv">is</span><span class="w"> </span><span class="nv">re</span><span class="o">-</span><span class="nv">generated</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="nv">freeDiameter</span>.<span class="nv">conf</span>.<span class="nv">tpl</span><span class="w"> </span><span class="nv">at</span><span class="w"> </span><span class="nv">container</span><span class="w"> </span><span class="nv">startup</span>
+#<span class="w"> </span><span class="nv">Your</span><span class="w"> </span><span class="nv">modifications</span><span class="w"> </span><span class="nv">will</span><span class="w"> </span><span class="nv">be</span><span class="w"> </span><span class="nv">lost</span>.
+</code></pre></div>
+
+<p>The banner earns its place (three files, three banners). An operator who edits the live file loses the edit at the next
+restart; the file says so in the only place they will look. The
+<code>resolv.conf</code> banner goes further and names the repository the nameservers come from (the
+Ansible inventory, not this image).</p>
+<h2>The cascade</h2>
+<p>One base image carries freeDiameter, the two C routing extensions and the Diameter
+dictionaries (<code>dict_s6a</code>, <code>dict_cx</code>). Each instance image is <code>FROM</code> that base with only its own
+config layered on. That ordering is the whole build — base first, then the instances. Two CI commits exist only
+because of it: <code>validate base→instance cascade build</code>, and <code>isolate main base image from branch
+builds</code>.</p>
+<p>A branch that changes <code>base/</code> must build its own base, or every instance test on that branch
+silently measures the previous one. The CI migration (CW-3385, February 2026) moved all of it
+from Jenkins to GitHub Actions, one workflow per image, and dropped the version from the image
+tag in favour of a Docker label. A version in the tag means the artifact you promote has a
+different name from the artifact you tested; a label means the same digest carries the version
+with it.</p>
+<h2>Config is validated at boot, not at build</h2>
+<p>The startup script renders the templates and then checks its own output:</p>
+<div class="codehilite"><pre><span></span><code>check_hss_fixups_config --strict /etc/freeDiameter/fixups_config.json
+</code></pre></div>
+
+<p>A template that renders to invalid JSON fails there (exit non-zero, no daemon), before
+freeDiameter reads it. The
+same script waits for rsyslog to come up under s6 (<code>s6-svc -wu</code>) before starting the daemon,
+because a DRA that boots faster than its log transport loses exactly the messages you want
+when it misbehaves.</p>
+<h2>Three failures worth keeping</h2>
+<p><strong>The bootup race.</strong> The container adds its own routes at init (<code>00-container-net</code>), and freeDiameter could start
+before they existed. The fix was to pre-install the RFC1918 routes in <code>cont-init.d</code>, which runs
+to completion before any service does — ordering, not retries.</p>
+<p><strong>Dictionary load order.</strong> <code>CW-3060 Fix order of loading the dictionaries to fix loading
+error</code>: the Cx dictionary depends on symbols the S6a one registers; loading them in the
+wrong order fails at startup with an error that names neither.</p>
+<p><strong>Routing and translation drifting apart.</strong> Dev subscribers are diverted to a development HSS,
+and the diversion has two halves that have to agree: a <code>un=</code> rule in the routing file, and an
+IMSI check in the Python transform. They were configured separately, which is one source of
+truth too many. Now both read a single environment variable (<code>DEV_HSS_IMSIS</code>, comma-separated),
+the routing rules are rendered into a marked block in <code>rt_default.conf</code> at startup, and the
+block ships empty — an image with nothing set diverts nothing.</p>
+<div class="codehilite"><pre><span></span><code><span class="o">#</span> <span class="kr">BEGIN</span> <span class="n">dev</span> <span class="n">IMSI</span> <span class="n">routes</span> <span class="err">—</span> <span class="n">rendered</span> <span class="n">at</span> <span class="n">startup</span> <span class="n">from</span> <span class="n">DEV_HSS_IMSIS</span>
+<span class="o">#</span> <span class="n">Empty</span> <span class="n">by</span> <span class="n">design</span><span class="p">:</span> <span class="n">nothing</span> <span class="n">is</span> <span class="n">diverted</span> <span class="n">unless</span> <span class="n">DEV_HSS_IMSIS</span> <span class="n">is</span> <span class="n">set</span><span class="p">.</span>
+<span class="o">#</span> <span class="kr">END</span> <span class="n">dev</span> <span class="n">IMSI</span> <span class="n">routes</span>
+</code></pre></div>
+
+<p>Two rules were added around that. A renderer that diverted nothing has to stop the transform
+diverting too, and a bad value must never stop the DRA from starting — it must also never
+divert a subscriber without rendering a route for them. Both of those are failure modes that
+would otherwise be discovered by a subscriber.</p>
+<h2>What the shape bought</h2>
+<p>The per-instance diff is config (five files, no code). A fix to the base reaches five images on the next cascade, and
+an instance can pin behaviour without a branch, because the knobs are environment variables
+read at boot. The cost is that nothing is inspectable until a container is running: there is no
+<code>freeDiameter.conf</code> to read in the repository, only the template and the variables that fill
+it.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--devops-automation-blog.html">Building Robust CI/CD Pipelines for Telecommunications Infrastructure</a> <span class=\"published\">DevOps</span></li>
 <li><a href="../posts/project--telecommunications-infrastructure-blog.html">Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure</a> <span class=\"published\">Infra</span></li>
 <li><a href="../posts/wireless-svc-omnitouch-dra--container-networking-dns-blog.html">Solving Complex Container Networking: DNS Resolution in Multi-Network Environments</a> <span class=\"published\">Containers</span></li>

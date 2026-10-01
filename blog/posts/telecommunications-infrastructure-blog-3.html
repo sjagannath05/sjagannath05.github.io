@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>Translating a MAP dialogue when neither side will change version — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,333 +18,73 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure</h2><p>Signal Transfer Points (STPs) are the unsung heroes of modern telecommunications networks. They serve as the digital equivalent of telephone switches, routing critical signaling messages that enable everything from phone calls to text messages to work seamlessly across carrier networks. During my work on the project project, I had the opportunity to build production-ready STP infrastructure using open-source technologies, specifically integrating the OSMO (Open Source Mobile Communications) stack into a modern, containerized architecture.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown"><h1>Building Modern Signal Transfer Points: A Deep Dive into Telecommunications Infrastructure</h1>
-<h2>Introduction</h2>
-<p>Signal Transfer Points (STPs) are the unsung heroes of modern telecommunications networks. They serve as the digital equivalent of telephone switches, routing critical signaling messages that enable everything from phone calls to text messages to work seamlessly across carrier networks. During my work on the project project, I had the opportunity to build production-ready STP infrastructure using open-source technologies, specifically integrating the OSMO (Open Source Mobile Communications) stack into a modern, containerized architecture.</p>
-<p>This blog post explores the technical challenges, architectural decisions, and implementation details of building scalable STP infrastructure for multiple wireless carriers.</p>
-<h2>Understanding Signal Transfer Points (STPs)</h2>
-<h3>What is an STP?</h3>
-<p>A Signal Transfer Point is a packet switch in the SS7 (Signaling System 7) network that routes signaling messages between network elements. Think of it as the "GPS navigator" of telecommunications networks – it doesn't carry the actual voice or data traffic, but it tells the network how and where to route communications.</p>
-<h3>Key Functions of STPs:</h3>
-<ol>
-<li><strong>Message Routing</strong>: Direct signaling messages to their intended destinations</li>
-<li><strong>Network Reliability</strong>: Provide redundant paths for critical signaling traffic </li>
-<li><strong>Protocol Conversion</strong>: Translate between different signaling protocols (SS7, SIGTRAN, etc.)</li>
-<li><strong>Load Balancing</strong>: Distribute traffic across multiple network paths</li>
-<li><strong>Security Gateways</strong>: Filter and validate signaling messages</li>
-</ol>
-<h2>The Modern Challenge: Legacy Protocols in Cloud-Native Environments</h2>
-<h3>Traditional STP Limitations</h3>
-<p>Legacy STP implementations typically suffer from:
-- <strong>Proprietary Hardware</strong>: Expensive, vendor-locked solutions
-- <strong>Monolithic Architecture</strong>: Difficult to scale and maintain
-- <strong>Limited Flexibility</strong>: Hard to adapt to new protocols or requirements
-- <strong>Operational Complexity</strong>: Manual configuration and management</p>
-<h3>Our Approach: Cloud-Native STP Architecture</h3>
-<p>We designed our project solution with modern principles:</p>
-<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────────────┐
-│ Load Balancer │
-└─────────────────────┬───────────────────────┘ │ ┌─────────────┼─────────────┐ │ │ │
-┌───────▼──────┐ ┌────▼────┐ ┌──────▼──────┐
-│ Partner A STP │ │Base STP │ │Partner B STP │
-│ (Carrier) │ │ (Shared)│ │ (Carrier) │
-└──────────────┘ └─────────┘ └─────────────┘ │ │ │ └─────────────┼─────────────┘ │ ┌─────────────▼─────────────┐ │ SS7 Network │ │ (Traditional Telecom) │ └───────────────────────────┘
-</code></pre></div> <h2>Technical Architecture Deep Dive</h2>
-<h3>OSMO Stack Integration</h3>
-<p>The OSMO project provides open-source implementations of telecommunications protocols. Our integration included:</p>
-<h4>1. libosmocore - Core Utilities</h4>
-<div class="codehilite"><pre><span></span><code><span class="c1">// Example: Message handling with libosmocore</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">msgb_alloc</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;STP Message&quot;</span><span class="p">);</span>
-<span class="n">msgb_put</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">data_len</span><span class="p">);</span>
-<span class="n">memcpy</span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">signaling_data</span><span class="p">,</span><span class="w"> </span><span class="n">data_len</span><span class="p">);</span> <span class="c1">// Route through STP</span>
-<span class="n">osmo_ss7_route_message</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">destination_point_code</span><span class="p">);</span>
-</code></pre></div> <h4>2. libosmo-sigtran - SS7 Signaling Transport</h4>
-<div class="codehilite"><pre><span></span><code><span class="c1">// M3UA (MTP3 User Adaptation) configuration</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">osmo_ss7_asp</span><span class="w"> </span><span class="o">*</span><span class="n">asp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">osmo_ss7_asp_alloc</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;m3ua-asp&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w"> </span><span class="n">OSMO_SS7_ASP_PROT_M3UA</span><span class="p">);</span>
-<span class="n">osmo_ss7_asp_peer_add_host</span><span class="p">(</span><span class="n">asp</span><span class="o">-&gt;</span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;192.168.1.100&quot;</span><span class="p">);</span>
-<span class="n">osmo_ss7_asp_peer_set_port</span><span class="p">(</span><span class="n">asp</span><span class="o">-&gt;</span><span class="n">server</span><span class="p">,</span><span class="w"> </span><span class="mi">2905</span><span class="p">);</span>
-</code></pre></div> <h4>3. libosmo-netif - Network Interface Handling</h4>
-<div class="codehilite"><pre><span></span><code><span class="c1">// SCTP connection management for reliable signaling</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">osmo_stream_srv</span><span class="w"> </span><span class="o">*</span><span class="n">srv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">osmo_stream_srv_create</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">link</span><span class="p">,</span>
-<span class="w"> </span><span class="n">IPPROTO_SCTP</span><span class="p">,</span>
-<span class="w"> </span><span class="n">sctp_accept_cb</span><span class="p">,</span>
-<span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">conn</span><span class="p">);</span>
-<span class="n">osmo_stream_srv_set_addr</span><span class="p">(</span><span class="n">srv</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;0.0.0.0&quot;</span><span class="p">);</span>
-<span class="n">osmo_stream_srv_set_port</span><span class="p">(</span><span class="n">srv</span><span class="p">,</span><span class="w"> </span><span class="mi">2905</span><span class="p">);</span>
-<span class="n">osmo_stream_srv_open</span><span class="p">(</span><span class="n">srv</span><span class="p">);</span>
-</code></pre></div> <h3>Multi-Carrier Architecture</h3>
-<p>One of the unique challenges was supporting multiple wireless carriers with different requirements:</p>
-<h4>Carrier-Specific Configurations</h4>
-<p><strong>Partner A STP Configuration:</strong></p>
-<div class="codehilite"><pre><span></span><code><span class="x"># osmo-stp.cfg.tpl for Partner A</span>
-<span class="x">cs7 instance 0</span>
-<span class="x"> point-code 1.1.1</span>
-<span class="x"> asp partner-a-m3ua-asp 2905 0 m3ua</span>
-<span class="x"> remote-ip </span><span class="cp">{{</span> <span class="nv">Partner A_REMOTE_IP</span> <span class="cp">}}</span>
-<span class="x"> local-ip </span><span class="cp">{{</span> <span class="nv">LOCAL_IP</span> <span class="cp">}}</span>
-<span class="x"> role asp</span>
-<span class="x"> sctp-role client</span> <span class="x">routing-key 1 1.1.1 1.1.2</span>
-<span class="x">application-server partner-a-as m3ua</span>
-<span class="x"> asp partner-a-m3ua-asp</span>
-</code></pre></div> <p><strong>Partner B STP Configuration:</strong></p>
-<div class="codehilite"><pre><span></span><code><span class="x"># osmo-stp.cfg.tpl for Partner B </span>
-<span class="x">cs7 instance 0</span>
-<span class="x"> point-code 2.2.2</span>
-<span class="x"> asp partner-b-m3ua-asp 2905 0 m3ua</span>
-<span class="x"> remote-ip </span><span class="cp">{{</span> <span class="nv">Partner B_REMOTE_IP</span> <span class="cp">}}</span>
-<span class="x"> local-ip </span><span class="cp">{{</span> <span class="nv">LOCAL_IP</span> <span class="cp">}}</span>
-<span class="x"> role asp</span>
-<span class="x"> sctp-role client</span> <span class="x">routing-key 2 2.2.2 2.2.3 </span>
-<span class="x">application-server partner-b-as m3ua</span>
-<span class="x"> asp partner-b-m3ua-asp</span>
-</code></pre></div> <h3>Protocol Stack Implementation</h3>
-<p>Our STP implementation supports the complete SIGTRAN protocol stack:</p>
-<div class="codehilite"><pre><span></span><code>┌─────────────────────────────────────┐
-│ Application Layer │
-│ (SCCP, TCAP, MAP, CAP) │
-├─────────────────────────────────────┤
-│ Adaptation Layer │
-│ (M3UA, SUA) │ ├─────────────────────────────────────┤
-│ Transport Layer │
-│ (SCTP) │
-├─────────────────────────────────────┤
-│ Network Layer │
-│ (IP) │
-└─────────────────────────────────────┘
-</code></pre></div> <h2>Implementation Challenges and Solutions</h2>
-<h3>Challenge 1: Real-Time Performance Requirements</h3>
-<p><strong>Problem</strong>: Telecom signaling requires sub-100ms response times with 99.999% availability.</p>
-<p><strong>Solution</strong>: Optimized container runtime and kernel-level optimizations:</p>
-<div class="codehilite"><pre><span></span><code><span class="c"># Dockerfile optimizations for real-time performance</span>
-<span class="k">FROM</span><span class="w"> </span><span class="s">debian:bullseye-slim</span> <span class="c"># Install real-time kernel extensions</span>
-<span class="k">RUN</span><span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>linux-image-rt-amd64<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>irqbalance<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>numactl <span class="c"># Configure CPU isolation for signaling processes</span>
-<span class="k">ENV</span><span class="w"> </span><span class="nv">ISOLCPUS</span><span class="o">=</span><span class="s2">&quot;2,3,6,7&quot;</span>
-<span class="k">ENV</span><span class="w"> </span><span class="nv">RRCPU</span><span class="o">=</span><span class="s2">&quot;0,1,4,5&quot;</span> <span class="c"># Set process priorities </span>
-<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;@stp soft rtprio 95&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/security/limits.conf
-<span class="k">RUN</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;@stp hard rtprio 95&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>/etc/security/limits.conf
-</code></pre></div> <h3>Challenge 2: Protocol Compliance and Interoperability</h3>
-<p><strong>Problem</strong>: STPs must interoperate with legacy equipment from multiple vendors.</p>
-<p><strong>Solution</strong>: Comprehensive protocol testing and validation:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Protocol compliance testing</span>
-test-protocol-compliance<span class="o">()</span><span class="w"> </span><span class="o">{</span>
-<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Testing M3UA compliance...&quot;</span> <span class="w"> </span><span class="c1"># Test ASP State Management</span>
-<span class="w"> </span>test_asp_up_down_sequence
-<span class="w"> </span>test_asp_active_inactive_sequence <span class="w"> </span><span class="c1"># Test Traffic Handling </span>
-<span class="w"> </span>test_message_routing
-<span class="w"> </span>test_load_balancing
-<span class="w"> </span>test_failure_recovery <span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;All protocol tests passed&quot;</span>
-<span class="o">}</span>
-</code></pre></div> <h3>Challenge 3: Configuration Management Complexity</h3>
-<p><strong>Problem</strong>: Each carrier requires different point codes, routing tables, and security policies.</p>
-<p><strong>Solution</strong>: Template-driven configuration with validation:</p>
-<div class="codehilite"><pre><span></span><code><span class="ch">#!/bin/bash</span>
-<span class="c1"># generate-carrier-config.sh</span>
-<span class="nv">CARRIER</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="nv">$2</span> <span class="c1"># Load carrier-specific parameters</span>
-<span class="nb">source</span><span class="w"> </span><span class="s2">&quot;configs/</span><span class="si">${</span><span class="nv">CARRIER</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">ENVIRONMENT</span><span class="si">}</span><span class="s2">.env&quot;</span> <span class="c1"># Generate configuration from template</span>
-envsubst<span class="w"> </span>&lt;<span class="w"> </span><span class="s2">&quot;templates/</span><span class="si">${</span><span class="nv">CARRIER</span><span class="si">}</span><span class="s2">/osmo-stp.cfg.tpl&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;/etc/osmo-stp-</span><span class="si">${</span><span class="nv">CARRIER</span><span class="si">}</span><span class="s2">.cfg&quot;</span> <span class="c1"># Validate configuration</span>
-osmo-stp<span class="w"> </span>--config-file<span class="o">=</span><span class="s2">&quot;/etc/osmo-stp-</span><span class="si">${</span><span class="nv">CARRIER</span><span class="si">}</span><span class="s2">.cfg&quot;</span><span class="w"> </span>--check-config <span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Configuration generated and validated for </span><span class="si">${</span><span class="nv">CARRIER</span><span class="si">}</span><span class="s2"> </span><span class="si">${</span><span class="nv">ENVIRONMENT</span><span class="si">}</span><span class="s2">&quot;</span>
-</code></pre></div> <h2>Advanced Features Implementation</h2>
-<h3>High Availability and Redundancy</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Kubernetes deployment with HA</span>
-<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
-<span class="nt">metadata</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">partner-a-stp</span>
-<span class="nt">spec</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="w"> </span><span class="nt">selector</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">matchLabels</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">partner-a-stp</span>
-<span class="w"> </span><span class="nt">template</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">spec</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">containers</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stp</span>
-<span class="w"> </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project/partner-a:latest</span>
-<span class="w"> </span><span class="nt">resources</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">requests</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2&quot;</span>
-<span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4Gi&quot;</span>
-<span class="w"> </span><span class="nt">limits</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4&quot;</span>
-<span class="w"> </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8Gi&quot;</span>
-<span class="w"> </span><span class="c1"># Real-time scheduling</span>
-<span class="w"> </span><span class="nt">securityContext</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">capabilities</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">add</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;SYS_NICE&quot;</span><span class="p p-Indicator">]</span>
-<span class="w"> </span><span class="nt">affinity</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">podAntiAffinity</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">requiredDuringSchedulingIgnoredDuringExecution</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">labelSelector</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">matchExpressions</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app</span>
-<span class="w"> </span><span class="nt">operator</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">In</span>
-<span class="w"> </span><span class="nt">values</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">partner-a-stp</span>
-<span class="w"> </span><span class="nt">topologyKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/hostname</span>
-</code></pre></div> <h3>Security Implementation</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1">// Message validation and security filtering</span>
-<span class="kt">int</span><span class="w"> </span><span class="nf">validate_signaling_message</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">osmo_ss7_msg</span><span class="w"> </span><span class="o">*</span><span class="n">ss7_msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">osmo_ss7_msg</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span> <span class="w"> </span><span class="c1">// Validate message structure</span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">len</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">osmo_ss7_msg</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">LOGP</span><span class="p">(</span><span class="n">DMSC</span><span class="p">,</span><span class="w"> </span><span class="n">LOGL_ERROR</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Invalid message length</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EINVAL</span><span class="p">;</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="c1">// Check source point code authorization</span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">is_point_code_authorized</span><span class="p">(</span><span class="n">ss7_msg</span><span class="o">-&gt;</span><span class="n">src_pc</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">LOGP</span><span class="p">(</span><span class="n">DSECURITY</span><span class="p">,</span><span class="w"> </span><span class="n">LOGL_NOTICE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Unauthorized source PC: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w"> </span><span class="n">ss7_msg</span><span class="o">-&gt;</span><span class="n">src_pc</span><span class="p">);</span>
-<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EACCES</span><span class="p">;</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="c1">// Rate limiting check</span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">check_rate_limit</span><span class="p">(</span><span class="n">ss7_msg</span><span class="o">-&gt;</span><span class="n">src_pc</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">LOGP</span><span class="p">(</span><span class="n">DSECURITY</span><span class="p">,</span><span class="w"> </span><span class="n">LOGL_NOTICE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Rate limit exceeded for PC: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-<span class="w"> </span><span class="n">ss7_msg</span><span class="o">-&gt;</span><span class="n">src_pc</span><span class="p">);</span>
-<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">EBUSY</span><span class="p">;</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div> <h3>Monitoring and Observability</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1">// Custom metrics for STP monitoring</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">rate_ctr_group_desc</span><span class="w"> </span><span class="n">stp_ctr_group_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="p">.</span><span class="n">group_name_prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;stp&quot;</span><span class="p">,</span>
-<span class="w"> </span><span class="p">.</span><span class="n">group_description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;STP Statistics&quot;</span><span class="p">,</span>
-<span class="w"> </span><span class="p">.</span><span class="n">num_ctr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ARRAY_SIZE</span><span class="p">(</span><span class="n">stp_ctr_description</span><span class="p">),</span>
-<span class="w"> </span><span class="p">.</span><span class="n">ctr_desc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stp_ctr_description</span>
-<span class="p">};</span> <span class="k">enum</span><span class="w"> </span><span class="n">stp_rate_ctr_idx</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">STP_CTR_MSG_RX</span><span class="p">,</span><span class="w"> </span><span class="c1">// Messages received</span>
-<span class="w"> </span><span class="n">STP_CTR_MSG_TX</span><span class="p">,</span><span class="w"> </span><span class="c1">// Messages transmitted </span>
-<span class="w"> </span><span class="n">STP_CTR_MSG_DROPPED</span><span class="p">,</span><span class="w"> </span><span class="c1">// Messages dropped</span>
-<span class="w"> </span><span class="n">STP_CTR_ASP_UP</span><span class="p">,</span><span class="w"> </span><span class="c1">// ASPs in UP state</span>
-<span class="w"> </span><span class="n">STP_CTR_ASP_DOWN</span><span class="p">,</span><span class="w"> </span><span class="c1">// ASPs in DOWN state</span>
-<span class="p">};</span>
-</code></pre></div> <h2>Performance Optimization</h2>
-<h3>Memory Management</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1">// Optimized message buffer allocation for high throughput</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">msgb_pool</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">llist_head</span><span class="w"> </span><span class="n">free_msgs</span><span class="p">;</span>
-<span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="w"> </span><span class="n">msgs</span><span class="p">[</span><span class="n">MSG_POOL_SIZE</span><span class="p">];</span>
-<span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">allocated</span><span class="p">;</span>
-<span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">max_allocated</span><span class="p">;</span>
-<span class="p">};</span> <span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="w"> </span><span class="o">*</span><span class="n">msgb_pool_get</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb_pool</span><span class="w"> </span><span class="o">*</span><span class="n">pool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="p">;</span> <span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">llist_empty</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">free_msgs</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="c1">// Pool exhausted, allocate from system</span>
-<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">msgb_alloc</span><span class="p">(</span><span class="n">MAX_MSG_SIZE</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;STP overflow&quot;</span><span class="p">);</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">llist_entry</span><span class="p">(</span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">free_msgs</span><span class="p">.</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">msgb</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">);</span>
-<span class="w"> </span><span class="n">llist_del</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="o">-&gt;</span><span class="n">list</span><span class="p">);</span>
-<span class="w"> </span><span class="n">msgb_reset</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span> <span class="w"> </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">allocated</span><span class="o">++</span><span class="p">;</span>
-<span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">msg</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div> <h3>CPU Optimization</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1">// SIMD optimizations for message processing</span>
-<span class="cp">#ifdef __AVX2__</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;immintrin.h&gt;</span> <span class="kt">void</span><span class="w"> </span><span class="nf">fast_point_code_lookup</span><span class="p">(</span><span class="n">__m256i</span><span class="w"> </span><span class="o">*</span><span class="n">pc_table</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">target_pc</span><span class="p">,</span><span class="w"> </span>
-<span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">__m256i</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_set1_epi32</span><span class="p">(</span><span class="n">target_pc</span><span class="p">);</span> <span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ROUTING_TABLE_SIZE</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="n">__m256i</span><span class="w"> </span><span class="n">entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_load_si256</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pc_table</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-<span class="w"> </span><span class="n">__m256i</span><span class="w"> </span><span class="n">cmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_cmpeq_epi32</span><span class="p">(</span><span class="n">entries</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">);</span> <span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_movemask_epi8</span><span class="p">(</span><span class="n">cmp</span><span class="p">);</span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">__builtin_ctz</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
-<span class="w"> </span><span class="k">return</span><span class="p">;</span>
-<span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="o">*</span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Not found</span>
-<span class="p">}</span>
-<span class="cp">#endif</span>
-</code></pre></div> <h2>Production Deployment Considerations</h2>
-<h3>Carrier Integration Checklist</h3>
-<ol>
-<li><strong>Protocol Testing</strong></li>
-<li>M3UA conformance testing</li>
-<li>SUA interoperability validation</li>
-<li>SCTP association management</li>
-<li>
-<p>Point code routing verification</p>
-</li>
-<li>
-<p><strong>Performance Validation</strong></p>
-</li>
-<li>Load testing with realistic traffic patterns</li>
-<li>Latency measurements under various loads </li>
-<li>Memory usage profiling</li>
-<li>
-<p>CPU utilization optimization</p>
-</li>
-<li>
-<p><strong>Security Audit</strong></p>
-</li>
-<li>Point code authorization policies</li>
-<li>Rate limiting configuration</li>
-<li>Intrusion detection integration</li>
-<li>
-<p>Audit logging compliance</p>
-</li>
-<li>
-<p><strong>Operational Readiness</strong></p>
-</li>
-<li>Monitoring dashboard setup</li>
-<li>Alerting configuration</li>
-<li>Runbook documentation</li>
-<li>Disaster recovery procedures</li>
-</ol>
-<h3>Regulatory Compliance</h3>
-<p>Telecommunications infrastructure must meet strict regulatory requirements:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Compliance configuration</span>
-<span class="nt">compliance</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">audit_logging</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w"> </span><span class="nt">data_retention_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2555</span><span class="w"> </span><span class="c1"># 7 years as required by telecom regulations</span>
-<span class="w"> </span><span class="nt">encryption_at_rest</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w"> </span><span class="nt">encryption_in_transit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w"> </span><span class="nt">access_control</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">require_mfa</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w"> </span><span class="nt">session_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3600</span>
-<span class="w"> </span><span class="nt">password_policy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;high_security&quot;</span>
-</code></pre></div> <h2>Lessons Learned and Best Practices</h2>
-<h3>1. Start with Standards Compliance</h3>
-<p>Always begin with protocol standards compliance before adding custom features. The telecommunications industry is heavily standardized, and interoperability is crucial.</p>
-<h3>2. Performance Testing is Critical</h3>
-<p>Real-world telecom loads can be unpredictable. Comprehensive load testing with realistic traffic patterns is essential.</p>
-<h3>3. Security is Non-Negotiable</h3>
-<p>Signaling networks are attractive targets for attackers. Implement defense-in-depth from day one.</p>
-<h3>4. Documentation and Monitoring</h3>
-<p>Comprehensive documentation and monitoring are essential for operations teams who need to maintain 24/7 availability.</p>
-<h3>5. Change Management Discipline</h3>
-<p>Production telecom infrastructure requires rigorous change management. Even small changes can have network-wide impacts.</p>
-<h2>Future Roadmap</h2>
-<h3>Emerging Technologies</h3>
-<ol>
-<li><strong>5G Integration</strong>: Extending STP functionality to support 5G core network signaling</li>
-<li><strong>Network Slicing</strong>: Dynamic STP configuration for different network slices</li>
-<li><strong>AI-Powered Optimization</strong>: Machine learning for traffic prediction and routing optimization</li>
-<li><strong>Edge Computing</strong>: Distributed STP functionality for ultra-low latency applications</li>
-</ol>
-<h3>Planned Enhancements</h3>
-<ul>
-<li><strong>GraphQL APIs</strong>: Modern API interfaces for network management systems</li>
-<li><strong>Service Mesh Integration</strong>: Istio integration for advanced traffic management</li>
-<li><strong>Multi-Cloud Support</strong>: Cross-cloud deployment capabilities</li>
-<li><strong>Automated Scaling</strong>: Kubernetes-based horizontal pod autoscaling</li>
-</ul>
-<h2>Conclusion</h2>
-<p>Building modern STP infrastructure requires balancing traditional telecommunications reliability requirements with modern cloud-native architecture principles. The project project demonstrates that open-source technologies can successfully replace expensive proprietary solutions while providing superior flexibility, scalability, and maintainability.</p>
-<p>Key takeaways for telecommunications engineers:</p>
-<ol>
-<li><strong>Open Source Viability</strong>: OSMO stack provides production-ready alternatives to proprietary solutions</li>
-<li><strong>Containerization Benefits</strong>: Modern deployment practices improve operational efficiency</li>
-<li><strong>Multi-Carrier Architecture</strong>: Shared infrastructure can serve multiple carriers efficiently</li>
-<li><strong>Performance Optimization</strong>: Careful optimization can meet real-time requirements in containerized environments</li>
-<li><strong>Security First</strong>: Implement comprehensive security measures from the beginning</li>
-</ol>
-<p>The future of telecommunications infrastructure lies in the intersection of traditional reliability with modern scalability – and projects like project show the way forward.</p>
-<h2>Technical Resources</h2>
-<ul>
-<li><strong>OSMO Project</strong>: <a href="https://osmocom.org/">https://osmocom.org/</a></li>
-<li><strong>SS7 Standards</strong>: ITU-T Q.700 series recommendations</li>
-<li><strong>SIGTRAN RFCs</strong>: RFC 3332 (SS7 MTP3-User Adaptation Layer), RFC 3868 (SUA)</li>
-<li><strong>3GPP Specifications</strong>: TS 23.002 (Network Architecture), TS 29.202 (SS7 Signaling Transport)</li>
-</ul>
-<p>The complete implementation showcases how modern software engineering practices can transform traditional telecommunications infrastructure, making it more reliable, scalable, and cost-effective while maintaining the stringent requirements of carrier-grade networks.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Translating a MAP dialogue when neither side will change version</h2><p>A partner&#x27;s served networks abort MT-ForwardSM at MAP v3 and answer it at v2; our SMSC speaks v3. The STP rewrites the application context in flight, and almost everything hard about it was scope.</p></div> <div class="meta"><span class="published">Infra</span></div> </header> <div class="content markdown">
+<p>A partner's served networks abort MT-ForwardSM at MAP v3 and answer it at v2; our SMSC speaks v3. The STP rewrites the application context in flight, and almost everything hard about it was scope.</p>
+<p>The STP images start from vendored Osmocom (libosmocore, libosmo-netif, libosmo-sigtran),
+imported in one commit in April 2025 — 238,016 lines across 1,053 files. Everything since is work on
+top: 243 of the repository's 249 non-merge commits, about 16,750 lines of C, two deployable
+variants and a shared base.</p>
+<p>The feature is one VTY directive, <code>map-ac-translate</code>, with one profile
+(<code>mt-forwardsm-v2-v3</code>). It rewrites <code>shortMsgMT-RelayContext</code> between v3 (<code>mt-forwardSM</code>,
+opcode 44) and v2 (<code>forwardSM</code>, opcode 46) — the request downgraded on the way out, the reply
+upgraded on the way back.</p>
+<h2>Per-AS was the wrong granularity</h2>
+<p>The first version enabled the profile on an application server (one line of VTY). That rewrote everything the AS
+carried, which was wrong, because the refusal comes from no single place. It
+starts at the individual served networks behind the transit hop: one serving node answers v3 correctly while its
+neighbours — addresses from the same assigned range — abort it.</p>
+<p>So translation became opt-in per destination (nothing by default). <code>dest-prefix</code> scopes a profile to called-party
+global-title prefixes, and a profile with no destination named translates nothing at all.
+Prefixes are validated when configured (exactly <code>*</code>, or 1-32 digits), so a partial wildcard is
+refused outright instead of accepted and then never matching.</p>
+<h2>The SCCP hook never ran on one of the two</h2>
+<p>One of the two STPs has no point code on either <code>cs7</code> instance. All of its traffic is relayed
+by DPC and never enters SCCP routing control, so a translation hooked into SCCP was dead code
+there — configured, counted as configured, and never once invoked.</p>
+<p>That produced <code>map-ac-translate ... layer (sccp|mtp)</code>. The <code>sccp</code> layer acts in SCCP routing
+control; <code>mtp</code> acts in the MTP relay path and keeps its own per-instance table of relayed
+dialogues. CI now checks that <code>layer mtp</code> is refused on a non-M3UA AS (with the expected reason).</p>
+<h2>Address hiding bit it from both sides</h2>
+<p>These STPs replace the originator's point code with their own on the way through
+(<code>address-hiding</code>, dialogue TTL 120 seconds). Translation collided with that twice, in opposite
+directions.</p>
+<p>At <code>layer sccp</code>, translation overwrote the dialogue-entry field address hiding uses to route
+replies — so replies to translated dialogues leaked the peer's point code to the SMS-GMSC. It now keeps its own marker (and an entry replaced for the same transaction ID keeps it).</p>
+<p>At <code>layer mtp</code>, the reverse: requests translated and replies never did, because address hiding
+had already rewritten the originator before the reply arrived. A reply to a dialogue recorded
+under the STP's own point code is now matched by transaction ID.</p>
+<h2>A dialogue is more than its BEGIN</h2>
+<p>A TC-BEGIN may open a dialogue with no Invoke in it at all (TS 29.002 clause 23.3.1,
+segmentation), and it still has to be downgraded. Every <code>mt-forwardSM</code> Invoke in the later
+CONTINUE and END messages needs rewriting too — those are the further segments of a multi-part
+short message, counted separately as <code>map-ac-xlate:invokes-downgraded</code>.</p>
+<p>With two load-sharing STPs the dialogue can arrive split (one leg each): a STP sees the
+CONTINUE having never seen the BEGIN. The peer's transaction ID is learned from its first CONTINUE only, and after a
+config change a CONTINUE is matched on both TIDs instead of an END being guessed at.</p>
+<h2>The bug underneath</h2>
+<p>SCCP dialogue correlation read entries after freeing them (two call sites, both pre-existing). On CONTINUE the TTL refresh passed
+pointers into the entry it frees; on END and ABORT, delivery read it after deletion. Both were pre-existing, and both became far
+more reachable once translation started touching every dialogue on these links.</p>
+<h2>How you can tell it is working</h2>
+<p>Four per-AS rate counters, because the failure is silent: <code>map-ac-xlate:downgraded</code>,
+<code>:upgraded</code>, <code>:invokes-downgraded</code>, and <code>:dialogs-dropped</code> for dialogues lost to a full
+tracking table. A translation that is configured and not firing looks exactly like a peer that
+stopped refusing; only counting both tells them apart. The full-table and short-TID conditions
+log at most once a minute, not once per message.</p>
+<p><code>make test</code> in the base image runs the three upstream suites and the standalone
+TCAP/translation unit tests under ASan and UBSan, in a Dockerfile <code>test</code> stage absent from the
+published image. Each variant's <code>make test</code> then starts the real image on the
+environment production runs, so an image whose config fails to render or load fails its
+build instead of being pushed.</p>
+<h2>One smaller thing, same shape</h2>
+<p>Each IP-SM-GW site now has its own M3UA routing context, which has to be set on both ends at
+once (<code>SS7_ROUTING_CONTEXT</code> on the node, <code>IPSMGW_RC</code> on the STP, <code>0</code> to restore the previous
+behaviour). A non-zero context is added to every DATA message the STP sends that AS, and an
+ASP Active carrying a context the AS does not have is refused.</p>
+<p>The source port is enforced as well, and this is the detail worth carrying away: a node that
+does not source from the configured port matches no ASP, and its association is dropped with a
+SHUTDOWN after the COOKIE ACK. From the node's side that is indistinguishable from the STP
+having no configuration for it at all.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--devops-automation-blog.html">Transforming SIM Management Through DevOps Automation: A Case Study</a> <span class=\"published\">DevOps</span></li>
 <li><a href="../posts/project--infrastructure-as-code-blog.html">Infrastructure as Code for Telecommunications: Automating Complex Deployments</a> <span class=\"published\">Infra</span></li>
 <li><a href="../posts/project--telecommunications-infrastructure-blog.html">Building Scalable SIM OTA Infrastructure: Managing Global Telecommunications Networks</a> <span class=\"published\">Infra</span></li>

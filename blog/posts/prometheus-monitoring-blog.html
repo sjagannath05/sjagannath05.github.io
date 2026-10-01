@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Building Production-Ready Prometheus Monitoring for Wireless Infrastructure — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>The exporter that reported nothing, quietly — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,114 +18,75 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Building Production-Ready Prometheus Monitoring for Wireless Infrastructure</h2><p>In today&#x27;s telecommunications landscape, monitoring wireless infrastructure is critical for maintaining service quality and operational efficiency. This blog post details the development of a specialized Prometheus metrics exporter designed specifically for wireless infrastructure monitoring at scale.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown"><h1>Building Production-Ready Prometheus Monitoring for Wireless Infrastructure</h1>
-<h2>Introduction</h2>
-<p>In today's telecommunications landscape, monitoring wireless infrastructure is critical for maintaining service quality and operational efficiency. This blog post details the development of a specialized Prometheus metrics exporter designed specifically for wireless infrastructure monitoring at scale.</p>
-<h2>The Challenge</h2>
-<p>When managing thousands of SIM cards, wireless orders, and billing processes, traditional monitoring approaches fall short. We needed a solution that could:</p>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>The exporter that reported nothing, quietly</h2><p>A Prometheus exporter whose queries ran, returned rows, and populated no metric at all — because a column alias did not match a metric name.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
+<p>A Prometheus exporter whose queries ran, returned rows, and populated no metric at all — because a column alias did not match a metric name.</p>
+<h2>What the thing is</h2>
+<p><code>wireless-query-exporter</code> is upstream <code>query-exporter</code> (pinned at 2.8.1) with two SQL statements pointed at a read replica, and the gauges it exposes are inventory counts. The configuration is three YAML files that get concatenated at validation time and rendered by <code>envtpl</code> at container start:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># databases.yaml</span>
+<span class="nt">databases</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">wireless_manager</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql://{{ WIRELESS_USER }}:{{ WIRELESS_PASSWORD }}@{{ WIRELESS_HOST }}:{{ WIRELESS_PORT }}/{{ WIRELESS_DB }}</span>
+<span class="w">    </span><span class="nt">keep-connected</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># metrics.yaml</span>
+<span class="nt">metrics</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">query_vendor_inventory</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gauge</span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Remaining eSIM profiles, vendor-partitioned</span>
+</code></pre></div>
+
+<p>A query runs on an interval (600 seconds for both of ours — inventory moves in hours, never in seconds) and <code>query-exporter</code> maps each result <em>column</em> onto a metric of the same name. That mapping is the whole mechanism (column name in, metric name out), and it is where the fault was.</p>
+<h2>The fault</h2>
+<p>This is what shipped:</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">query_vendor_inventory</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">600</span>
+<span class="w">  </span><span class="nt">databases</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">wireless_manager</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">metrics</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">vendor_inventory</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">sql</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">SELECT</span>
+<span class="w">    </span><span class="no">COUNT(*) AS &quot;count&quot;</span>
+<span class="w">    </span><span class="no">FROM &quot;public&quot;.&quot;sim_cards&quot;</span>
+<span class="w">    </span><span class="no">...</span>
+</code></pre></div>
+
+<p>Three names, and no two of them agree (metric, reference, column). The metric defined in <code>metrics.yaml</code> is <code>query_vendor_inventory</code>; the query claims <code>vendor_inventory</code>; the column comes back as <code>count</code>. The second query was worse, selecting a bare <code>COUNT(*)</code> with no alias at all (Postgres then names the column <code>count</code>).</p>
+<p>The query executed. The replica answered. The row count was correct, every ten minutes, for weeks. The metric was never set, because no column in the result was named after a metric, and nothing raised a word about it. Scraping <code>/metrics</code> returned a healthy response with the gauge absent — and an absent gauge in Prometheus looks identical to a gauge that has yet to be scraped, so neither the exporter nor the dashboard had anything to complain about.</p>
+<p>A monitoring system that fails loudly is a nuisance; one that fails silently is worse, because the silence is also what success looks like. The only signal available was the absence of a signal.</p>
+<h2>The fix</h2>
+<p>Align the column with the metric, in both queries:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">SELECT</span>
+<span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">&quot;query_vendor_inventory&quot;</span>
+<span class="k">FROM</span><span class="w"> </span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_card_codes&quot;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="ss">&quot;Sim Card Codes&quot;</span>
+<span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span><span class="p">.</span><span class="ss">&quot;id&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Sim Card Codes&quot;</span><span class="p">.</span><span class="ss">&quot;sim_card_id&quot;</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span><span class="p">.</span><span class="ss">&quot;type&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">CAST</span><span class="p">(</span><span class="s1">&#39;esim&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">sim_type</span><span class="p">))</span>
+<span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;Sim Card Codes&quot;</span><span class="p">.</span><span class="ss">&quot;dp_plus_vendor&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&lt;vendor&gt;&#39;</span><span class="p">)</span><span class="w">   </span><span class="c1">-- name elided</span>
+<span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span><span class="p">.</span><span class="ss">&quot;customer_allocated&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">FALSE</span><span class="p">)</span>
+<span class="k">AND</span><span class="w"> </span><span class="p">((</span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span><span class="p">.</span><span class="ss">&quot;organization_id&quot;</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+<span class="w">     </span><span class="k">OR</span><span class="w"> </span><span class="p">(</span><span class="ss">&quot;public&quot;</span><span class="p">.</span><span class="ss">&quot;sim_cards&quot;</span><span class="p">.</span><span class="ss">&quot;organization_id&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+<span class="k">AND</span><span class="w"> </span><span class="ss">&quot;Sim Card Codes&quot;</span><span class="p">.</span><span class="ss">&quot;profile_version&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">4</span><span class="p">.</span><span class="mi">0</span>
+</code></pre></div>
+
+<p>Six lines of change across two queries (two aliases, two metric references, two descriptions). The useful part of that ticket is the other 335 lines.</p>
+<h2>The validator</h2>
+<p>There was already a schema check (<code>schema_validator.py</code>, wrapping upstream's own <code>_validate_config</code>) and it passed the broken config, correctly. The config was valid; the names merely disagreed, which no schema can see. So <code>validate_config.py</code> went in beside it (335 lines, pyyaml plus sqlvalidator) to check what crosses files:</p>
 <ul>
-<li>Monitor wireless-specific metrics like MRC tracking, SIM card inventory, and public IP allocation</li>
-<li>Handle dual database connections (management and billing systems)</li>
-<li>Provide real-time visibility into order statuses and inventory levels</li>
-<li>Scale efficiently without impacting production databases</li>
+<li>every metric a query references exists in <code>metrics.yaml</code></li>
+<li>every database a query references exists in <code>databases.yaml</code></li>
+<li>every SQL column alias matches a metric the query names</li>
 </ul>
-<h2>Technical Architecture</h2>
-<h3>Core Components</h3>
-<p>The solution is built around a custom Python application that extends the base <code>QueryExporterScript</code> to add wireless-specific functionality:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span> <span class="n">application</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_health</span><span class="p">)</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_health</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span> <span class="k">return</span> <span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">})</span>
-</code></pre></div> <h3>Database Strategy</h3>
-<p>The system connects to two primary databases:
-- <strong>wireless_manager</strong>: Core management database containing SIM cards, orders, and gateway information
-- <strong>wireless_billing</strong>: Billing database with Oban job queue monitoring</p>
-<p>Using replica connections ensures zero impact on production systems while maintaining real-time monitoring capabilities.</p>
-<h3>Key Metrics Delivered</h3>
-<p>The system provides 15+ critical wireless metrics:</p>
-<p><strong>Inventory Management:</strong>
-- <code>wireless_total_sim_cards</code>: Total SIM cards by region and allocation status
-- <code>wireless_v4_sim_in_stock</code>: v4 SIM cards remaining in stock
-- <code>wireless_v3_sim_in_stock</code>: v3 SIM cards remaining in stock</p>
-<p><strong>Order Tracking:</strong>
-- <code>wireless_sim_card_orders_transient_status</code>: Orders in pending/allocated/dispatched states
-- <code>wireless_sim_card_orders_delivered_total</code>: Total delivered orders
-- <code>wireless_total_ordered_sim_cards</code>: Current order pipeline</p>
-<p><strong>Resource Management:</strong>
-- <code>wireless_total_sim_card_public_ips</code>: Public IP allocation by region
-- <code>wireless_available_sim_card_public_ips</code>: Available IP pool monitoring</p>
-<h2>Implementation Highlights</h2>
-<h3>Configuration Management</h3>
-<p>Using YAML-based configuration for maintainability:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># queries.yaml</span>
-<span class="nt">wireless_mrcs</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">300</span>
-<span class="w"> </span><span class="nt">databases</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">wireless_manager</span><span class="p p-Indicator">]</span>
-<span class="w"> </span><span class="nt">query</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w"> </span><span class="no">SELECT mrc_type, COUNT(*) as count </span>
-<span class="w"> </span><span class="no">FROM wireless_mrcs </span>
-<span class="w"> </span><span class="no">WHERE status = &#39;active&#39;</span>
-<span class="w"> </span><span class="no">GROUP BY mrc_type</span>
-</code></pre></div> <h3>Security &amp; Secrets Management</h3>
-<p>Integrated with HashiCorp Vault for secure credential management:
-- Environment-based configuration
-- Automated secret rotation capabilities
-- Development and production secret separation</p>
-<h3>Deployment Strategy</h3>
-<p>The system uses a hybrid deployment approach:
-- Containerized with Docker for consistency
-- CI/CD pipeline deployment for reliability
-- Kubernetes configurations for scalability
-- Strategic single-datacenter deployment for non-critical services</p>
-<h2>Performance Optimizations</h2>
-<h3>Query Efficiency</h3>
-<ul>
-<li>Optimized query intervals (300-600 seconds) based on metric criticality</li>
-<li>Replica database usage to prevent production impact</li>
-<li>Careful metric cardinality management to prevent explosion</li>
-</ul>
-<h3>Resource Management</h3>
-<ul>
-<li>Single replica deployment for non-critical service classification</li>
-<li>Memory-optimized query result handling</li>
-<li>Efficient connection pooling</li>
-</ul>
-<h2>Operational Excellence</h2>
-<h3>Monitoring &amp; Alerting</h3>
-<ul>
-<li>Health endpoint (<code>/health</code>) for service monitoring</li>
-<li>Comprehensive metrics endpoint (<code>/metrics</code>) for Prometheus scraping</li>
-<li>Integration with Grafana for visualization</li>
-</ul>
-<h3>Documentation &amp; Maintenance</h3>
-<ul>
-<li>Comprehensive README with troubleshooting guides</li>
-<li>Schema validation for configuration changes</li>
-<li>Local development setup with docker-compose</li>
-</ul>
-<h2>Lessons Learned</h2>
-<h3>1. <strong>Infrastructure Decisions Matter</strong></h3>
-<p>Migrating from Kubernetes to CI pipeline deployment improved reliability and simplified operations for this specific use case.</p>
-<h3>2. <strong>Security First</strong></h3>
-<p>Implementing Vault integration from the start prevented security technical debt and enabled proper credential lifecycle management.</p>
-<h3>3. <strong>Monitoring Strategy</strong></h3>
-<p>Balancing monitoring coverage with performance impact requires careful query optimization and interval tuning.</p>
-<h3>4. <strong>Development Experience</strong></h3>
-<p>Investing in local development setup and comprehensive documentation pays dividends in team velocity and maintenance.</p>
-<h2>Results &amp; Impact</h2>
-<p>The wireless monitoring system now provides:
-- <strong>Real-time visibility</strong> into 15+ critical wireless infrastructure metrics
-- <strong>Proactive alerting</strong> for inventory levels, order processing, and billing health
-- <strong>Zero production impact</strong> through replica database usage
-- <strong>Operational efficiency</strong> through automated monitoring and alerting</p>
-<h2>Future Enhancements</h2>
-<p>Looking ahead, planned improvements include:
-- Additional wireless-specific metrics based on operational feedback
-- Enhanced Grafana dashboard templates
-- Automated anomaly detection for critical metrics
-- Integration with incident management systems</p>
-<h2>Conclusion</h2>
-<p>Building production-ready monitoring for wireless infrastructure requires careful consideration of performance, security, and operational requirements. By leveraging Prometheus, custom Python extensions, and modern DevOps practices, we created a solution that provides critical visibility while maintaining system reliability.</p>
-<p>The key to success was focusing on wireless-specific requirements while building on proven monitoring foundations. This approach delivered a monitoring solution that truly serves the needs of telecommunications operations teams.</p>
-<hr />
-<p><em>This implementation represents 25 hours of development work across 22 commits, resulting in a production-ready monitoring solution that provides crucial visibility into wireless infrastructure operations.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+<p>The third check is the one that catches this bug, and the only awkward one — it has to recover aliases from the SQL text, matching both <code>AS "name"</code> and bare <code>AS name</code>, then fall back to reading the select list ahead of <code>FROM</code>. Parsing SQL with regular expressions is a bad idea in general; here the queries are ours, short, and conventionally formatted, so a regex that handles our two shapes beats a dependency that handles every shape.</p>
+<p>Both checks now run as separate Make targets (<code>make validate_config</code>, <code>make validate_schemas</code>) before anything is built:</p>
+<div class="codehilite"><pre><span></span><code><span class="nf">validate_config</span><span class="o">:</span>
+<span class="w">    </span>.<span class="w"> </span>venv/bin/activate<span class="p">;</span><span class="w"> </span>python<span class="w"> </span>validate_config.py
+
+<span class="nf">validate_schemas</span><span class="o">:</span><span class="w"> </span><span class="n">schema_validator</span>
+</code></pre></div>
+
+<p>Two targets and not one, deliberately. They fail for different reasons — <code>validate_schemas</code> rejects a config upstream would refuse to load, <code>validate_config</code> rejects a config that loads fine and measures nothing.</p>
+<h2>What it cost</h2>
+<p>One ticket in October 2025, 418 insertions, and a validator ten times the size of the config it validates (335 lines against 30-odd of YAML). That ratio looks wrong until you count what the config is worth: two numbers, on a dashboard, that somebody plans eSIM stock against. A wrong number would have been caught in a day. A missing one went unnoticed because the chart was simply empty, and an empty chart reads as quiet.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--docker-infrastructure-blog.html">Containerizing DNS Services: Docker Infrastructure for Enterprise Networks</a> <span class=\"published\">Containers</span></li>
 <li><a href="../posts/project--prometheus-metrics-blog.html">Implementing Prometheus Metrics for DNS Services: A Complete Observability Strategy</a> <span class=\"published\">Monitoring</span></li>
 <li><a href="../posts/project--wireless-infrastructure-blog.html">DNS Infrastructure for Wireless Networks: Building Reliable Services for Private PGW Environments</a> <span class=\"published\">Infra</span></li>

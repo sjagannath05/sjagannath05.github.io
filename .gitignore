@@ -3,3 +3,4 @@ scripts/*.bak
 scripts/
 __pycache__/
 *.pyc
+artifacts/

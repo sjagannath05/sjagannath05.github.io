@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Deep Dive into Telecom Protocol Analysis: Building Tools for Diameter Traffic Inspection — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>Counting Diameter per subscriber when the answers carry no IMSI — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,224 +18,43 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Deep Dive into Telecom Protocol Analysis: Building Tools for Diameter Traffic Inspection</h2><p>Telecom networks operate on complex protocols that require specialized analysis tools for troubleshooting, optimization, and compliance monitoring. The Diameter protocol, fundamental to 4G/5G networks, handles critical functions like authentication, authorization, and accounting across network elements.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown"><h1>Deep Dive into Telecom Protocol Analysis: Building Tools for Diameter Traffic Inspection</h1>
-<h2>Introduction</h2>
-<p>Telecom networks operate on complex protocols that require specialized analysis tools for troubleshooting, optimization, and compliance monitoring. The Diameter protocol, fundamental to 4G/5G networks, handles critical functions like authentication, authorization, and accounting across network elements.</p>
-<p>In this post, I'll explore the development of a comprehensive Diameter protocol analysis toolkit that processes packet captures to extract meaningful insights about subscriber behavior, network performance, and system health.</p>
-<h2>Understanding the Diameter Protocol Challenge</h2>
-<h3>The Complexity of Telecom Traffic Analysis</h3>
-<p>Diameter protocol analysis presents several unique challenges:
-- <strong>High Volume</strong>: Mobile networks generate massive amounts of signaling traffic
-- <strong>Complex Correlations</strong>: Matching requests with responses across distributed systems
-- <strong>Multi-IMSI Tracking</strong>: Subscribers with multiple IMSI identities require sophisticated tracking
-- <strong>Real-time Requirements</strong>: Network operations teams need immediate insights for troubleshooting</p>
-<h3>Traditional Analysis Limitations</h3>
-<p>Standard packet analysis tools fall short for telecom environments:
-- Generic tools lack telecom-specific field extractors
-- Manual correlation of request/response pairs is error-prone
-- Statistical aggregation requires custom logic
-- Performance bottlenecks emerge with large PCAP files</p>
-<h2>Solution Architecture: Lua-Based Wireshark Extension</h2>
-<h3>Core Components</h3>
-<p>The analysis toolkit consists of several integrated components:</p>
-<ol>
-<li><strong>Wireshark Lua Scripts</strong>: Protocol-aware packet processors</li>
-<li><strong>Statistical Aggregators</strong>: IMSI-based traffic analytics</li>
-<li><strong>Go Utilities</strong>: High-performance data processing</li>
-<li><strong>Output Formatters</strong>: Structured reporting tools</li>
-</ol>
-<h3>Technical Implementation</h3>
-<h4>1. Dual-Tap Architecture</h4>
-<div class="codehilite"><pre><span></span><code><span class="c1">-- Create separate taps for requests and responses</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">tap_requests</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Listener</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;diameter and e212.imsi and diameter.flags.request == 1&quot;</span><span class="p">)</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">tap_responses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Listener</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;diameter and e212.imsi and diameter.flags.request == 0&quot;</span><span class="p">)</span> <span class="c1">-- Field extractors</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">imsi_f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Field</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">&quot;e212.imsi&quot;</span><span class="p">)</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">endtoend_f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Field</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">&quot;diameter.endtoendid&quot;</span><span class="p">)</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">cmd_code_f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Field</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">&quot;diameter.cmd.code&quot;</span><span class="p">)</span>
-<span class="kd">local</span><span class="w"> </span><span class="nv">result_code_f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Field</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">&quot;diameter.Result-Code&quot;</span><span class="p">)</span>
-</code></pre></div> <p>This architecture separates request and response processing, enabling:
-- <strong>Parallel Processing</strong>: Simultaneous analysis of both traffic directions
-- <strong>Correlation Tracking</strong>: End-to-end ID matching for request/response pairs
-- <strong>State Management</strong>: Per-IMSI statistics accumulation</p>
-<h4>2. IMSI-Centric Data Structure</h4>
-<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">imsi_stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span> <span class="kd">local</span><span class="w"> </span><span class="kr">function</span><span class="w"> </span><span class="nf">init_imsi_stats</span><span class="p">(</span><span class="nv">imsi</span><span class="p">)</span>
-<span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nv">imsi_stats</span><span class="p">[</span><span class="nv">imsi</span><span class="p">]</span><span class="w"> </span><span class="kr">then</span>
-<span class="w"> </span><span class="nv">imsi_stats</span><span class="p">[</span><span class="nv">imsi</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="nv">total_requests</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w"> </span><span class="nv">total_responses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w"> </span><span class="nv">request_codes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{},</span>
-<span class="w"> </span><span class="nv">response_codes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-<span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="kr">end</span>
-<span class="kr">end</span>
-</code></pre></div> <p>This design provides:
-- <strong>Subscriber-Level Analytics</strong>: Individual IMSI performance tracking
-- <strong>Command Code Distribution</strong>: Understanding protocol usage patterns
-- <strong>Response Code Analysis</strong>: Success/failure rate monitoring</p>
-<h4>3. High-Performance Go Processing</h4>
-<div class="codehilite"><pre><span></span><code><span class="kd">func</span><span class="w"> </span><span class="nx">processDiameterData</span><span class="p">(</span><span class="nx">inputFile</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="nx">Analysis</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="nx">scanner</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">bufio</span><span class="p">.</span><span class="nx">NewScanner</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span>
-<span class="w"> </span><span class="nx">analysis</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">Analysis</span><span class="p">{</span>
-<span class="w"> </span><span class="nx">IMSIStats</span><span class="p">:</span><span class="w"> </span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="nx">IMSIData</span><span class="p">),</span>
-<span class="w"> </span><span class="nx">Totals</span><span class="p">:</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">TotalStats</span><span class="p">{},</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">scanner</span><span class="p">.</span><span class="nx">Scan</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">scanner</span><span class="p">.</span><span class="nx">Text</span><span class="p">()</span>
-<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">imsi</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">extractIMSI</span><span class="p">(</span><span class="nx">line</span><span class="p">);</span><span class="w"> </span><span class="nx">imsi</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w"> </span><span class="nx">updateStats</span><span class="p">(</span><span class="nx">analysis</span><span class="p">,</span><span class="w"> </span><span class="nx">imsi</span><span class="p">,</span><span class="w"> </span><span class="nx">line</span><span class="p">)</span>
-<span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="p">}</span> <span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nx">analysis</span><span class="p">,</span><span class="w"> </span><span class="kc">nil</span>
-<span class="p">}</span>
-</code></pre></div> <p>Benefits of the Go component:
-- <strong>Memory Efficiency</strong>: Streaming processing of large datasets
-- <strong>Performance</strong>: Native binary execution for heavy computations
-- <strong>Structured Output</strong>: JSON/CSV export capabilities</p>
-<h2>Deep Dive: HSS Traffic Analysis</h2>
-<h3>Home Subscriber Server Monitoring</h3>
-<p>The HSS (Home Subscriber Server) is critical for subscriber authentication and profile management. The analysis toolkit provides specialized HSS monitoring:</p>
-<h4>Request/Response Correlation</h4>
-<div class="codehilite"><pre><span></span><code><span class="kr">function</span><span class="w"> </span><span class="nc">tap_requests</span><span class="p">.</span><span class="nf">packet</span><span class="p">(</span><span class="nv">pinfo</span><span class="p">)</span>
-<span class="w"> </span><span class="kd">local</span><span class="w"> </span><span class="nv">imsi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">imsi_f</span><span class="p">()</span>
-<span class="w"> </span><span class="kd">local</span><span class="w"> </span><span class="nv">end_to_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">endtoend_f</span><span class="p">()</span>
-<span class="w"> </span><span class="kd">local</span><span class="w"> </span><span class="nv">cmd_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cmd_code_f</span><span class="p">()</span> <span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="nv">imsi</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="nv">cmd_code</span><span class="w"> </span><span class="kr">then</span>
-<span class="w"> </span><span class="nf">init_imsi_stats</span><span class="p">(</span><span class="nb">tostring</span><span class="p">(</span><span class="nv">imsi</span><span class="p">))</span>
-<span class="w"> </span><span class="kd">local</span><span class="w"> </span><span class="nv">stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">imsi_stats</span><span class="p">[</span><span class="nb">tostring</span><span class="p">(</span><span class="nv">imsi</span><span class="p">)]</span>
-<span class="w"> </span><span class="nv">stats</span><span class="p">.</span><span class="py">total_requests</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">stats</span><span class="p">.</span><span class="py">total_requests</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w"> </span><span class="nf">increment_code_count</span><span class="p">(</span><span class="nv">stats</span><span class="p">.</span><span class="py">request_codes</span><span class="p">,</span><span class="w"> </span><span class="nb">tostring</span><span class="p">(</span><span class="nv">cmd_code</span><span class="p">))</span>
-<span class="w"> </span><span class="kr">end</span>
-<span class="kr">end</span>
-</code></pre></div> <h4>Multi-IMSI Correlation Analysis</h4>
-<p>The toolkit handles complex scenarios where subscribers have multiple IMSI identities:
-- <strong>Cross-IMSI Tracking</strong>: Links related IMSI identities
-- <strong>Profile Consolidation</strong>: Aggregates statistics across related identities
-- <strong>Anomaly Detection</strong>: Identifies unusual patterns in multi-IMSI usage</p>
-<h3>Statistical Analysis Features</h3>
-<h4>1. Command Code Distribution</h4>
-<p>Tracks the frequency of different Diameter commands:
-- Authentication requests (AIR/AIA)
-- Update location requests (ULR/ULA)
-- Purge requests (PUR/PUA)
-- Notify requests (NOR/NOA)</p>
-<h4>2. Response Code Analysis</h4>
-<p>Monitors success/failure patterns:
-- DIAMETER_SUCCESS (2001)
-- DIAMETER_UNABLE_TO_DELIVER (3002)
-- DIAMETER_USER_UNKNOWN (5001)
-- Custom experimental result codes</p>
-<h4>3. Performance Metrics</h4>
-<p>Calculates key performance indicators:
-- Request/response ratios
-- Average processing times
-- Error rate percentages
-- Peak traffic periods</p>
-<h2>Production Implementation Results</h2>
-<h3>Performance Improvements</h3>
-<ul>
-<li><strong>Processing Speed</strong>: 10x faster than manual analysis</li>
-<li><strong>Accuracy</strong>: 100% request/response correlation</li>
-<li><strong>Scalability</strong>: Handles multi-GB PCAP files efficiently</li>
-<li><strong>Automation</strong>: Eliminates manual statistics compilation</li>
-</ul>
-<h3>Operational Benefits</h3>
-<h4>1. Troubleshooting Acceleration</h4>
-<ul>
-<li><strong>Root Cause Analysis</strong>: Pinpoint subscriber-specific issues</li>
-<li><strong>Performance Bottlenecks</strong>: Identify slow-responding network elements</li>
-<li><strong>Error Pattern Recognition</strong>: Detect systematic failures</li>
-</ul>
-<h4>2. Capacity Planning</h4>
-<ul>
-<li><strong>Traffic Modeling</strong>: Understand load distribution patterns</li>
-<li><strong>Growth Projections</strong>: Predict capacity requirements</li>
-<li><strong>Resource Optimization</strong>: Right-size network elements</li>
-</ul>
-<h4>3. Compliance Monitoring</h4>
-<ul>
-<li><strong>Protocol Compliance</strong>: Verify adherence to 3GPP standards</li>
-<li><strong>SLA Monitoring</strong>: Track service level agreement metrics</li>
-<li><strong>Audit Trails</strong>: Maintain detailed transaction logs</li>
-</ul>
-<h2>Real-World Use Cases</h2>
-<h3>Case Study 1: Multi-IMSI Subscriber Investigation</h3>
-<p>A subscriber reported authentication failures despite valid credentials. The analysis revealed:
-- Multiple IMSI identities with inconsistent HSS profiles
-- Request/response correlation gaps indicating timeout issues
-- Specific command codes failing consistently</p>
-<p><strong>Resolution</strong>: HSS profile synchronization resolved the authentication failures.</p>
-<h3>Case Study 2: Network Element Performance Analysis</h3>
-<p>High response times were impacting user experience. Analysis showed:
-- Specific HSS nodes showing elevated response times
-- Command code distribution indicating overload patterns
-- Correlation with peak traffic periods</p>
-<p><strong>Resolution</strong>: Load balancing adjustments and capacity upgrades improved performance.</p>
-<h3>Case Study 3: Protocol Anomaly Detection</h3>
-<p>Unusual traffic patterns triggered investigation. Analysis revealed:
-- Non-standard command code sequences
-- Response codes indicating potential security issues
-- Subscriber behavior patterns suggesting fraud</p>
-<p><strong>Resolution</strong>: Security team investigation prevented potential fraud.</p>
-<h2>Technical Deep Dive: Advanced Features</h2>
-<h3>1. Streaming Analysis</h3>
-<p>For real-time monitoring, the toolkit supports streaming analysis:</p>
-<div class="codehilite"><pre><span></span><code>tshark<span class="w"> </span>-i<span class="w"> </span>eth0<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;diameter&quot;</span><span class="w"> </span>-T<span class="w"> </span>fields<span class="w"> </span>-e<span class="w"> </span>e212.imsi<span class="w"> </span>-e<span class="w"> </span>diameter.cmd.code<span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>./diameter_processor<span class="w"> </span>--stream<span class="w"> </span>--output-format<span class="w"> </span>json
-</code></pre></div> <h3>2. Distributed Processing</h3>
-<p>Large PCAP files can be processed in parallel:</p>
-<div class="codehilite"><pre><span></span><code>split<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span>large.pcap<span class="w"> </span>chunk_
-<span class="k">for</span><span class="w"> </span>chunk<span class="w"> </span><span class="k">in</span><span class="w"> </span>chunk_*<span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w"> </span>tshark<span class="w"> </span>-r<span class="w"> </span><span class="nv">$chunk</span><span class="w"> </span>-X<span class="w"> </span>lua_script:diameter_analysis.lua<span class="w"> </span><span class="p">&amp;</span>
-<span class="k">done</span>
-<span class="nb">wait</span>
-</code></pre></div> <h3>3. Custom Alerting</h3>
-<p>Integration with monitoring systems:</p>
-<div class="codehilite"><pre><span></span><code><span class="kr">if</span><span class="w"> </span><span class="nv">error_rate</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">threshold</span><span class="w"> </span><span class="kr">then</span>
-<span class="w"> </span><span class="nf">send_alert</span><span class="p">(</span><span class="s2">&quot;High error rate detected: &quot;</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="nv">error_rate</span><span class="w"> </span><span class="o">..</span><span class="w"> </span><span class="s2">&quot;%&quot;</span><span class="p">)</span>
-<span class="kr">end</span>
-</code></pre></div> <h2>Implementation Lessons Learned</h2>
-<h3>1. Memory Management</h3>
-<p>Large PCAP files require careful memory management:
-- Use streaming processing where possible
-- Implement garbage collection for completed correlations
-- Monitor memory usage during processing</p>
-<h3>2. Performance Optimization</h3>
-<p>Several techniques improve processing speed:
-- Filter irrelevant packets early in the pipeline
-- Use efficient data structures for correlation tables
-- Implement parallel processing for independent operations</p>
-<h3>3. Error Handling</h3>
-<p>Production environments require robust error handling:
-- Handle malformed Diameter packets gracefully
-- Provide detailed error reporting for troubleshooting
-- Implement retry logic for transient failures</p>
-<h2>Future Enhancements</h2>
-<h3>Planned Features</h3>
-<ol>
-<li><strong>Machine Learning Integration</strong>: Anomaly detection using ML algorithms</li>
-<li><strong>Real-time Dashboards</strong>: Live visualization of traffic patterns</li>
-<li><strong>Multi-Protocol Support</strong>: Extend to other telecom protocols (SIP, RADIUS)</li>
-<li><strong>Cloud Integration</strong>: Distributed processing in cloud environments</li>
-</ol>
-<h3>Architecture Evolution</h3>
-<ul>
-<li><strong>Microservices</strong>: Break analysis into specialized services</li>
-<li><strong>Stream Processing</strong>: Apache Kafka integration for real-time analysis</li>
-<li><strong>API Gateway</strong>: RESTful API for programmatic access</li>
-</ul>
-<h2>Code Organization</h2>
-<p>The toolkit is organized into several modules:
-- <strong>Core Analysis</strong>: Lua scripts for Wireshark integration
-- <strong>Data Processing</strong>: Go utilities for performance-critical operations
-- <strong>Output Formatting</strong>: JSON, CSV, and HTML report generators
-- <strong>Testing Suite</strong>: Comprehensive test cases with sample PCAP files</p>
-<h2>Conclusion</h2>
-<p>Developing specialized tools for telecom protocol analysis requires deep understanding of both the protocols and the operational requirements. The Diameter analysis toolkit demonstrates how custom tools can provide insights that generic solutions cannot match.</p>
-<p>Key takeaways from this implementation:
-1. <strong>Domain Expertise</strong>: Understanding telecom protocols is crucial for effective tooling
-2. <strong>Performance Matters</strong>: Large-scale analysis requires optimized implementations
-3. <strong>Correlation is Key</strong>: Request/response matching provides the most valuable insights
-4. <strong>Automation Enables Scale</strong>: Manual analysis doesn't scale to modern network volumes</p>
-<p>This toolkit has proven invaluable for network operations teams, providing the visibility needed to maintain reliable telecom services in production environments.</p>
-<hr />
-<p><em>This analysis toolkit is based on production experience with large-scale telecom networks. The techniques described have been validated in environments processing millions of Diameter transactions daily.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Counting Diameter per subscriber when the answers carry no IMSI</h2><p>A Wireshark Lua tap that got the counts wrong twice, and the field that fixed it.</p></div> <div class="meta"><span class="published">Telecom</span></div> </header> <div class="content markdown">
+<p>A Wireshark Lua tap that got the counts wrong twice, and the field that fixed it.</p>
+<h2>The problem the field layout creates</h2>
+<p>In S6a, a request carries the subscriber identity — <code>e212.imsi</code> sits in the Authentication-Information-Request (command 318, application 16777251). The answer omits it. So "how many requests did this IMSI make, and how many did it get back" cannot be answered by reading responses, because a response does not know whose it is.</p>
+<p>That one asymmetry is the whole engineering problem, and both of my first two attempts walked into it.</p>
+<h2>Two versions that counted wrong</h2>
+<p><code>diameterv2.lua</code> listened on <code>diameter.flags.request == 1</code> and keyed its table on the IMSI. It produced request counts per subscriber, correctly, and no response counts at all; the filter excluded them.</p>
+<p><code>diameterreqres.lua</code> widened the filter to both directions (<code>request == 1 || request == 0</code>) and kept the IMSI as the key. That is worse than the first version, because now responses arrive, have no IMSI, and get attributed to whatever the key lookup happens to find. The README of the version that replaced both says it without ceremony: fixed counting issues that previously caused incorrect request/response counts.</p>
+<h2>Key on the end-to-end ID, not on the IMSI</h2>
+<p>Diameter already carries the thing needed here. <code>diameter.endtoendid</code> is set by the originator and copied into the answer (a 32-bit value, unique per originator for long enough), so it is the one label both halves of a transaction share. The working version keys on it:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">tap_diameter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">Listener</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kc">nil</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;diameter&quot;</span><span class="p">)</span>
+<span class="c1">-- one entry per end-to-end id</span>
+<span class="nv">endtoend_table</span><span class="p">[</span><span class="nv">id</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">imsi</span><span class="p">,</span><span class="w"> </span><span class="nv">request_count</span><span class="p">,</span><span class="w"> </span><span class="nv">response_count</span><span class="p">,</span>
+<span class="w">                       </span><span class="nv">request_codes</span><span class="p">,</span><span class="w"> </span><span class="nv">response_results</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<p>One Listener on the whole <code>diameter</code> filter, one entry per end-to-end ID. A request sets the entry's IMSI and bumps <code>request_count</code>; a response bumps <code>response_count</code> and never touches the IMSI field. At <code>draw()</code> time the table is folded by IMSI, merging every end-to-end ID that shared one. Single pass over the capture; the attribution holds because it never depends on a response knowing anything about itself.</p>
+<h2>The second problem: several messages in one packet</h2>
+<p>A TCP segment can carry more than one Diameter message, so a field extractor returns every occurrence, not one value. The script pulls each field as a list (<code>{endtoend_f()}</code>), splits any comma-joined string form, and then zips the per-message lists positionally:</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">local</span><span class="w"> </span><span class="nv">max_messages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">math.max</span><span class="p">(</span><span class="o">#</span><span class="nv">endtoend_values</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">#</span><span class="nv">request_flag_values</span><span class="p">,</span>
+<span class="w">                              </span><span class="o">#</span><span class="nv">cmd_code_values</span><span class="p">)</span>
+</code></pre></div>
+
+<p>IMSI is the exception: it falls back to <code>imsi_values[1]</code> when there is no value at position <code>i</code>, because one subscriber's identity is often shared across the messages in a packet. That fallback is a guess, and it is the weakest line in the script.</p>
+<h2>What it found</h2>
+<p>A 38 MB capture (38,330 Diameter packets), 3,456 distinct IMSIs, 19,930 requests in total. Sorted by request count, the first row is one IMSI with 1,345 requests, all command 318, all answered 5001:</p>
+<div class="codehilite"><pre><span></span><code>IMSI            | Req  | Resp | Mismatch | Request Codes | Response Codes
+311210393865041 | 1345 | 1345 | NO       | 318(1345)     | 318:5001(1345)
+</code></pre></div>
+
+<p>One subscriber asking for authentication vectors 1,345 times in one capture window (requests and responses matched, so nothing timed out) and being refused every time. The <code>Mismatch</code> column (<code>YES</code> when requests and responses differ for an IMSI) is the column people actually read, because an unanswered request is a timeout somewhere and a timeout is the thing being hunted.</p>
+<h2>Two limits worth stating</h2>
+<p>The response key is <code>cmd:result</code>, built from <code>diameter.Result-Code</code> when present and <code>diameter.Experimental-Result-Code</code> otherwise — and the key does not record which of the two it came from. <code>318:5001</code> is therefore ambiguous: 5001 as an experimental result is DIAMETER_ERROR_USER_UNKNOWN, while 5001 in the base protocol is DIAMETER_AVP_UNSUPPORTED. The tool prints a number and leaves the disambiguation to the reader — which is fine for one IMSI and poor for a report.</p>
+<p>The summary also drops any end-to-end ID whose request was outside the capture, because the fold only keeps entries that have an IMSI. The debug output shows them (<code>IMSI: nil, Req: 0, Resp: 1</code>), so an orphaned answer is visible and uncounted.</p>
+<h2>The Go part is a wrapper</h2>
+<p>Worth saying plainly, since the directory contains Go files: <code>main.go</code> is about 40 lines (one <code>flag.Parse</code>, one embed, one call). It <code>//go:embed</code>s the Lua script, parses one argument, and hands both to tshark. There is no Go analysis, no streaming processor, no parallel chunking; the Go exists to make a binary that carries its own Lua. The entire tool is a Lua tap plus a flag parser, and that is why it is 300 lines instead of 3,000.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--monitoring-observability-blog.html">Building Production-Grade Monitoring: Lessons from Managing Enterprise Prometheus Infrastructure</a> <span class=\"published\">Monitoring</span></li>
 <li><a href="../posts/project--prometheus-ecosystem-blog.html">Mastering the Prometheus Ecosystem: From Metrics Collection to Long-term Storage</a> <span class=\"published\">Monitoring</span></li>
 <li><a href="../posts/project--automation-tools-blog.html">Building Developer-Friendly Automation Tools: From PCAP Collection to Configuration Management</a> <span class=\"published\">Automation</span></li>

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Modern Python Module Architecture: Building Extensible Monitoring Applications — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>A package that exists to add one route — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,188 +18,75 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Modern Python Module Architecture: Building Extensible Monitoring Applications</h2><p>Creating maintainable, extensible Python applications requires thoughtful module architecture from the start. This post explores the design decisions behind building a production monitoring service, focusing on module structure, packaging, and extensibility patterns.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown"><h1>Modern Python Module Architecture: Building Extensible Monitoring Applications</h1>
-<h2>Introduction</h2>
-<p>Creating maintainable, extensible Python applications requires thoughtful module architecture from the start. This post explores the design decisions behind building a production monitoring service, focusing on module structure, packaging, and extensibility patterns.</p>
-<h2>Project Structure Evolution</h2>
-<h3>Initial Architecture</h3>
-<div class="codehilite"><pre><span></span><code><span class="n">tlnx_query_exporter</span><span class="o">/</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">__init__</span><span class="o">.</span><span class="n">py</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">main</span><span class="o">.</span><span class="n">py</span>
-<span class="err">└──</span><span class="w"> </span><span class="n">config</span><span class="o">/</span>
-</code></pre></div> <h3>Final Architecture</h3>
-<div class="codehilite"><pre><span></span><code><span class="n">wireless_query_exporter</span><span class="o">/</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">__init__</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="c1"># 8 lines - Module initialization</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">main</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="c1"># 25 lines - Core application logic </span>
-<span class="err">├──</span><span class="w"> </span><span class="n">config</span><span class="o">/</span>
-<span class="err">│</span><span class="w"> </span><span class="err">├──</span><span class="w"> </span><span class="n">databases</span><span class="o">.</span><span class="n">yaml</span><span class="w"> </span><span class="c1"># Database connection definitions</span>
-<span class="err">│</span><span class="w"> </span><span class="err">├──</span><span class="w"> </span><span class="n">metrics</span><span class="o">.</span><span class="n">yaml</span><span class="w"> </span><span class="c1"># Prometheus metrics configuration</span>
-<span class="err">│</span><span class="w"> </span><span class="err">└──</span><span class="w"> </span><span class="n">queries</span><span class="o">.</span><span class="n">yaml</span><span class="w"> </span><span class="c1"># SQL query definitions</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">setup</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="c1"># 17 lines - Package configuration</span>
-<span class="err">├──</span><span class="w"> </span><span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span><span class="w"> </span><span class="c1"># Modern Python packaging</span>
-<span class="err">└──</span><span class="w"> </span><span class="n">Dockerfile</span><span class="w"> </span><span class="c1"># 126 lines - Container configuration</span>
-</code></pre></div> <h2>Core Design Principles</h2>
-<h3>1. <strong>Extension Over Modification</strong></h3>
-<p>Rather than modifying existing libraries, we extended functionality through inheritance:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryExporterScript</span> <span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span>
-<span class="w"> </span><span class="sd">&quot;&quot;&quot;Extended QueryExporter with health endpoint capability&quot;&quot;&quot;</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span> <span class="c1"># Add custom health endpoint</span> <span class="n">application</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_health</span><span class="p">)</span> <span class="c1"># Call parent initialization</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_health</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
-<span class="w"> </span><span class="sd">&quot;&quot;&quot;Custom health check endpoint&quot;&quot;&quot;</span> <span class="k">return</span> <span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">})</span>
-</code></pre></div> <p><strong>Benefits:</strong>
-- Maintains compatibility with base library updates
-- Adds wireless-specific functionality without forking
-- Clean separation of concerns
-- Easy to test and maintain</p>
-<h3>2. <strong>Configuration-Driven Architecture</strong></h3>
-<p>Separated application logic from configuration:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># main.py - Pure application logic</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="n">script</span> <span class="o">=</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span> <span class="n">namespace</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span> <span class="n">script</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
-</code></pre></div> <div class="codehilite"><pre><span></span><code><span class="c1"># databases.yaml - External configuration</span>
-<span class="nt">wireless_manager</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql://user:pass@host:port/db</span> <span class="nt">wireless_billing</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">dsn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgresql://user:pass@host:port/billing_db</span>
-</code></pre></div> <p><strong>Advantages:</strong>
-- Environment-specific configurations without code changes
-- Easy testing with mock configurations
-- Clear separation between business logic and deployment details</p>
-<h3>3. <strong>Module Naming Strategy</strong></h3>
-<p>Strategic rename from <code>tlnx_query_exporter</code> to <code>wireless_query_exporter</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Before: Generic naming</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">tlnx_query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span> <span class="c1"># After: Domain-specific naming </span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">wireless_query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
-</code></pre></div> <p><strong>Impact:</strong>
-- Improved discoverability
-- Clear module purpose
-- Better team understanding
-- Easier maintenance</p>
-<h2>Packaging &amp; Distribution</h2>
-<h3>Modern Python Packaging</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># setup.py - Comprehensive package definition</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span><span class="p">,</span> <span class="n">find_packages</span> <span class="n">setup</span><span class="p">(</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wireless-query-exporter&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span> <span class="n">install_requires</span><span class="o">=</span><span class="p">[</span> <span class="s2">&quot;aiohttp&gt;=3.8.0&quot;</span><span class="p">,</span> <span class="s2">&quot;query-exporter&gt;=2.9.0&quot;</span><span class="p">,</span> <span class="s2">&quot;prometheus-client&gt;=0.15.0&quot;</span><span class="p">,</span> <span class="p">],</span> <span class="n">python_requires</span><span class="o">=</span><span class="s2">&quot;&gt;=3.8&quot;</span><span class="p">,</span> <span class="n">entry_points</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;console_scripts&#39;</span><span class="p">:</span> <span class="p">[</span> <span class="s1">&#39;wireless-exporter=wireless_query_exporter.main:main&#39;</span><span class="p">,</span> <span class="p">],</span> <span class="p">},</span>
-<span class="p">)</span>
-</code></pre></div> <h3>pyproject.toml Integration</h3>
-<div class="codehilite"><pre><span></span><code><span class="k">[build-system]</span>
-<span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;setuptools&gt;=45&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;wheel&quot;</span><span class="p">]</span>
-<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;setuptools.build_meta&quot;</span> <span class="k">[project]</span>
-<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;wireless-query-exporter&quot;</span>
-<span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Prometheus metrics exporter for wireless infrastructure&quot;</span>
-<span class="n">authors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[{</span><span class="n">name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;Wireless Squad&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;wireless@company.com&quot;</span><span class="p">}]</span>
-</code></pre></div> <h2>Extensibility Patterns</h2>
-<h3>1. <strong>Plugin Architecture Foundation</strong></h3>
-<p>The base structure supports easy plugin addition:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Future plugin structure</span>
-<span class="n">wireless_query_exporter</span><span class="o">/</span>
-<span class="err">├──</span> <span class="n">core</span><span class="o">/</span>
-<span class="err">│</span> <span class="err">├──</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
-<span class="err">│</span> <span class="err">└──</span> <span class="n">base</span><span class="o">.</span><span class="n">py</span>
-<span class="err">├──</span> <span class="n">plugins</span><span class="o">/</span>
-<span class="err">│</span> <span class="err">├──</span> <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span> <span class="err">│</span> <span class="err">├──</span> <span class="n">billing_monitor</span><span class="o">.</span><span class="n">py</span>
-<span class="err">│</span> <span class="err">└──</span> <span class="n">inventory_tracker</span><span class="o">.</span><span class="n">py</span>
-<span class="err">└──</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span>
-</code></pre></div> <h3>2. <strong>Async-First Design</strong></h3>
-<p>Built with async/await for scalability:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span> <span class="c1"># Async startup for non-blocking operations</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_monitoring</span><span class="p">()</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_setup_monitoring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># Custom monitoring setup</span> <span class="k">pass</span>
-</code></pre></div> <h3>3. <strong>Dependency Injection Ready</strong></h3>
-<p>Configuration-driven dependencies make testing easier:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Easily mockable for testing</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_loader</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">db_connector</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_loader</span> <span class="o">=</span> <span class="n">config_loader</span> <span class="ow">or</span> <span class="n">DefaultConfigLoader</span><span class="p">()</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_connector</span> <span class="o">=</span> <span class="n">db_connector</span> <span class="ow">or</span> <span class="n">DefaultDBConnector</span><span class="p">()</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-</code></pre></div> <h2>Testing Strategy</h2>
-<h3>Module Structure for Testing</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># __init__.py - Expose testing utilities</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">HealthQueryExporterScript</span><span class="p">,</span> <span class="n">main</span> <span class="c1"># For testing</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HealthQueryExporterScript&quot;</span><span class="p">,</span> <span class="s2">&quot;main&quot;</span><span class="p">]</span>
-</code></pre></div> <h3>Test-Friendly Design</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># main.py - Designed for easy mocking</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="n">script</span> <span class="o">=</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span> <span class="n">parser</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span> <span class="n">namespace</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span> <span class="k">return</span> <span class="n">script</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span> <span class="c1"># Return value for testing</span> <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
-</code></pre></div> <h2>Docker Integration</h2>
-<h3>Multi-stage Build Optimization</h3>
-<div class="codehilite"><pre><span></span><code><span class="c"># Dockerfile - Optimized for Python modules</span>
-<span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9-slim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="s">builder</span> <span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span>
-<span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
-<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>-r<span class="w"> </span>requirements.txt <span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9-slim</span>
-<span class="k">WORKDIR</span><span class="w"> </span><span class="s">/app</span> <span class="c"># Copy Python packages</span>
-<span class="k">COPY</span><span class="w"> </span>--from<span class="o">=</span>builder<span class="w"> </span>/root/.local<span class="w"> </span>/root/.local <span class="c"># Copy application module</span>
-<span class="k">COPY</span><span class="w"> </span>wireless_query_exporter/<span class="w"> </span>wireless_query_exporter/
-<span class="k">COPY</span><span class="w"> </span>setup.py<span class="w"> </span>. <span class="c"># Install in development mode for easier debugging</span>
-<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>. <span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;wireless-exporter&quot;</span><span class="p">]</span>
-</code></pre></div> <h2>Performance Considerations</h2>
-<h3>1. <strong>Import Optimization</strong></h3>
-<p>Lazy imports for better startup time:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># __init__.py - Minimal imports</span>
-<span class="sd">&quot;&quot;&quot;Wireless Query Exporter</span> <span class="sd">A specialized Prometheus metrics exporter for wireless infrastructure.</span>
-<span class="sd">&quot;&quot;&quot;</span> <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span> <span class="c1"># Lazy import for better performance</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_exporter</span><span class="p">():</span> <span class="kn">from</span><span class="w"> </span><span class="nn">.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">HealthQueryExporterScript</span> <span class="k">return</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span>
-</code></pre></div> <h3>2. <strong>Memory Efficiency</strong></h3>
-<p>Efficient module loading:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># main.py - Memory-conscious imports</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">aiohttp.web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">json_response</span> <span class="c1"># Import only what&#39;s needed</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryExporterScript</span>
-</code></pre></div> <h2>Development Workflow</h2>
-<h3>Local Development Setup</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Makefile - Development automation</span>
-.PHONY:<span class="w"> </span>install<span class="w"> </span><span class="nb">test</span><span class="w"> </span>validate install:
-<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-dev.txt test:
-<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>tests/ validate:
-<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>wireless_query_exporter.main<span class="w"> </span>--dry-run
-</code></pre></div> <h3>Module Validation</h3>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Built-in validation</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate_module</span><span class="p">():</span>
-<span class="w"> </span><span class="sd">&quot;&quot;&quot;Validate module structure and dependencies&quot;&quot;&quot;</span> <span class="k">try</span><span class="p">:</span> <span class="kn">from</span><span class="w"> </span><span class="nn">wireless_query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">HealthQueryExporterScript</span> <span class="n">script</span> <span class="o">=</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span> <span class="k">return</span> <span class="kc">True</span> <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Module validation failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">return</span> <span class="kc">False</span>
-</code></pre></div> <h2>Best Practices Learned</h2>
-<h3>1. <strong>Naming Conventions Matter</strong></h3>
-<ul>
-<li>Use domain-specific names for better discoverability</li>
-<li>Consistent naming across modules, files, and classes</li>
-<li>Avoid generic names that don't convey purpose</li>
-</ul>
-<h3>2. <strong>Configuration Management</strong></h3>
-<ul>
-<li>External configuration files over hardcoded values</li>
-<li>Environment-specific overrides</li>
-<li>Schema validation for configuration integrity</li>
-</ul>
-<h3>3. <strong>Extension Points</strong></h3>
-<ul>
-<li>Design for extension from the start</li>
-<li>Use inheritance over modification</li>
-<li>Provide clear extension APIs</li>
-</ul>
-<h3>4. <strong>Package Structure</strong></h3>
-<ul>
-<li>Flat is better than nested (for simple modules)</li>
-<li>Group related functionality</li>
-<li>Separate configuration from code</li>
-</ul>
-<h2>Future Architecture Enhancements</h2>
-<h3>Planned Improvements</h3>
-<ol>
-<li><strong>Plugin System</strong>: Dynamic plugin loading for metric collectors</li>
-<li><strong>Configuration Validation</strong>: JSON Schema validation for YAML configs</li>
-<li><strong>Metrics Registry</strong>: Centralized metric definition management</li>
-<li><strong>Health Check Framework</strong>: Extensible health check system</li>
-</ol>
-<h3>Scalability Considerations</h3>
-<ul>
-<li>Database connection pooling</li>
-<li>Query result caching</li>
-<li>Horizontal scaling support</li>
-<li>Metric aggregation strategies</li>
-</ul>
-<h2>Conclusion</h2>
-<p>Building maintainable Python modules requires:
-- <strong>Clear separation of concerns</strong> between application logic and configuration
-- <strong>Extensibility patterns</strong> that support future growth
-- <strong>Modern packaging practices</strong> for easy distribution
-- <strong>Testing-friendly design</strong> for reliable development</p>
-<p>The wireless query exporter demonstrates how thoughtful architecture decisions early in development pay dividends in maintainability, testability, and team productivity.</p>
-<p>Key takeaways:
-- Start with the simplest architecture that could work
-- Design extension points but don't over-engineer
-- Configuration-driven design enables flexible deployment
-- Module naming and structure impact team velocity</p>
-<hr />
-<p><em>This architecture supported 25 hours of rapid development while maintaining code quality and extensibility for future enhancements.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>A package that exists to add one route</h2><p>Twenty-four lines of Python wrapped around somebody else&#x27;s exporter, and the three entry points it took to get them to start.</p></div> <div class="meta"><span class="published">Other</span></div> </header> <div class="content markdown">
+<p>Twenty-four lines of Python wrapped around somebody else's exporter, and the three entry points it took to get them to start.</p>
+<h2>The whole package</h2>
+<p><code>wireless_query_exporter</code> is two files. <code>__init__.py</code> is a docstring, a version and a re-export (165 bytes); <code>main.py</code> is this:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">aiohttp.web</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">json_response</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">query_exporter.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryExporterScript</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HealthQueryExporterScript</span><span class="p">(</span><span class="n">QueryExporterScript</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_application_startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">):</span>
+        <span class="n">application</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s2">&quot;/health&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_health</span><span class="p">)</span>
+        <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_application_startup</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_handle_health</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json_response</span><span class="p">({</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;OK&quot;</span><span class="p">})</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+    <span class="n">namespace</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">script</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+</code></pre></div>
+
+<p>That is the architecture. Upstream <code>query-exporter</code> serves <code>/metrics</code> on 8080 and nothing else; the readiness probe wants a cheap endpoint (<code>GET /health</code>, a flat JSON body) that answers without touching Postgres. So one subclass overrides one hook, registers one route, and calls <code>super()</code> — the route goes on before the parent builds the rest of the application, which is the only reason the override has to be <code>on_application_startup</code> and not <code>__init__</code>.</p>
+<p>Everything else about this service is YAML. The queries, the metrics, the DSNs and the intervals live in configuration files (three of them, concatenated at validation time) that upstream already reads. Keeping all of that out of Python is the only design decision here worth defending, and it is why the package stayed at twenty-four lines through four tickets.</p>
+<h2>The rename, and what it broke</h2>
+<p>The package first shipped under a house prefix, inherited from the internal repository it was forked from. Renaming it to <code>wireless_query_exporter</code> was a pure file move (two files, zero line changes), and the move itself was fine. The next commit is the interesting one, because it had to repair three things the rename exposed.</p>
+<p>The Dockerfile had been doing this:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/app
+<span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/app
+</code></pre></div>
+
+<p><code>PYTHONPATH</code> makes imports work and makes nothing else work (no distribution, no metadata, no scripts). There is no distribution, so there is no console script, no metadata and no way for <code>s6</code> to start the service by name — the old module name had been wired into the run script by hand, and a rename breaks a hand-wired path silently. The repair is an install, plus a <code>setup.py</code> to install from (name, version, <code>find_packages()</code>, two requirements):</p>
+<div class="codehilite"><pre><span></span><code><span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>/app
+<span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="n">entry_points</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;console_scripts&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;wireless-query-exporter=wireless_query_exporter.main:main&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">},</span>
+</code></pre></div>
+
+<p><code>pip install -e .</code> in a container is odd — editable installs exist for development and there is no source to edit here. It does the job — a <code>.pth</code> file plus the entry-point script, with nothing copied — but it is not what I would write today.</p>
+<h2>Three entry points for one function</h2>
+<p><code>main()</code> was written three ways in two days, and the round trip is the useful part.</p>
+<p>It started as the argparse form: ask the script object for its parser, parse, hand the namespace to <code>script.main()</code>. Then it became the callable form:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="n">HealthQueryExporterScript</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">script</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Shorter, and wrong (three lines saved, one contract broken). <code>QueryExporterScript</code> is callable, so this runs, but calling it bypasses <code>get_parser()</code> — the config path and the log level stop being parsed as options and arrive as positional arguments. Worse, a <code>console_scripts</code> shim calls <code>main()</code> with no arguments at all, so the function has to go to <code>sys.argv</code> itself. That is argument parsing, reimplemented badly, inside the one function whose job was to avoid it.</p>
+<p>The next day it went back:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">parser</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_parser</span><span class="p">()</span>
+<span class="n">namespace</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+<span class="n">script</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Four lines longer and correct. The rule it encodes is narrow: when you subclass a tool, use the tool's parser, never your own idea of its arguments. <code>get_parser()</code> knows every flag upstream accepts and will still know them after an upgrade; <code>sys.argv[1:]</code> knows nothing, and it does not fail loudly when upstream adds an option.</p>
+<h2>What it cost</h2>
+<p>A rename, a packaging fix, and an entry point that went out and came back. The net change is a <code>setup.py</code>, one line of Dockerfile, and a <code>main()</code> that is textually identical to the one I started with (17 lines, same four statements).</p>
+<p>The thing I would keep is the ratio. Twenty-four lines of Python, four YAML files, and a subclass that overrides one method — a thinner wrapper would have meant patching upstream, and a thicker one would have meant owning a query engine.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--prometheus-metrics-blog.html">Implementing Prometheus Metrics for DNS Services: A Complete Observability Strategy</a> <span class=\"published\">Monitoring</span></li>
 <li><a href="../posts/project--wireless-infrastructure-blog.html">DNS Infrastructure for Wireless Networks: Building Reliable Services for Private PGW Environments</a> <span class=\"published\">Infra</span></li>
 <li><a href="../posts/project--devops-secrets-management-blog.html">DevOps Security: From Hardcoded Secrets to Vault Integration</a> <span class=\"published\">DevOps</span></li>

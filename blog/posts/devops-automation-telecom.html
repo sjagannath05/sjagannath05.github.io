@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <title>DevOps Automation in Telecom: SIM and EPC — Jagannath Subramanya</title>
+    <title>Two pipelines that tried to remember what they had done — Jagannath Subramanya</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="../assets/css/main.css" />
@@ -31,10 +31,48 @@ host.appendChild(b);});})();</script>
       <header id="header"><h1><a href="../index.html">Jagannath Subramanya</a></h1></header>
       <div id="main">
         <article class="post">
-          <header><div class="title"><h2>DevOps Automation in Telecom: SIM and EPC</h2><p>Practical automation approaches for SIM tooling and EPC workflows.</p></div><div class="meta"><span class="published">DevOps</span></div></header>
-          <div class="content markdown"><section><h3>SIM Tooling</h3>
-</section><section><h3>EPC Automation</h3>
-</section></div>
+          <header><div class="title"><h2>Two pipelines that tried to remember what they had done</h2><p>A SIM provisioning pipeline and a documentation image, both of which got simpler once they stopped keeping state about their own past runs.</p></div><div class="meta"><span class="published">DevOps</span></div></header>
+          <div class="content markdown">
+<p>A SIM provisioning pipeline and a documentation image, both of which got simpler once they stopped keeping state about their own past runs.</p>
+<h2>SIM OTA data in git</h2>
+<p>The over-the-air data for our SIM estate lives on a vendor OTA platform, under one directory tree, and people edit it there through the platform's web interface. It is field definitions, the applet configuration tables and the SMS campaign scripts. In November 2024 that tree was imported into a repository so the server had a reviewed source (<code>fields.xml</code>, the <code>db/</code> tables, <code>bindata/</code> and <code>smsscripts/</code>), laid out exactly as on the server.</p>
+<p>The first deployment design tried to be clever about which files to push. A workflow step downloaded a <code>deployment-metadata</code> artifact from the previous successful run, read the commit it recorded, and diffed each watched path against it:</p>
+<div class="codehilite"><pre><span></span><code>echo<span class="w"> </span>&quot;<span class="cp">${</span><span class="n">WATCHED_FILES_FOLDERS</span><span class="cp">}</span>&quot;<span class="w"> </span>|<span class="w"> </span>while<span class="w"> </span>IFS=<span class="w"> </span>read<span class="w"> </span>-r<span class="w"> </span>ITEM;<span class="w"> </span>do
+<span class="w">  </span>ITEM_CHANGES=$(git<span class="w"> </span>diff<span class="w"> </span>--name-only<span class="w"> </span><span class="nv">$LAST_DEPLOY_COMMIT</span><span class="w"> </span>HEAD<span class="w"> </span>--<span class="w"> </span>&quot;<span class="nv">$ITEM</span>&quot;)
+<span class="w">  </span>CHANGED_FILES=&quot;<span class="nv">$CHANGED_FILES</span><span class="w"> </span><span class="nv">$ITEM_CHANGES</span>&quot;
+done
+</code></pre></div>
+
+<p>That branch was never merged, and it should not have been. The <code>while</code> loop is the right-hand side of a pipe, so it runs in a subshell; <code>CHANGED_FILES</code> is empty again by the time the next step reads it. The artifact download was worse. It carried <code>continue-on-error: true</code>, so a missing or expired artifact (they expire in 90 days by default) left <code>LAST_DEPLOY_COMMIT</code> unset — which the script reads as "no previous deployment", and therefore as "deploy everything". The failure mode of the safety mechanism was a full overwrite.</p>
+<p>What landed instead has no memory at all. The workflow's own <code>paths:</code> filter decides whether to run, and the Makefile holds the list explicitly:</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">SIMOTA_FILES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>simota/fields.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>simota/bindata/<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>simota/db/<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>simota/smsscripts/
+
+<span class="nf">deploy-ota-files</span><span class="o">:</span>
+<span class="w">        </span>@for<span class="w"> </span>item<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>SIMOTA_FILES<span class="k">)</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span><span class="k">$(</span>OTA_RSYNC_COMMAND<span class="k">)</span><span class="w"> </span><span class="k">$(</span>EXTRA_RSYNC_ARGS<span class="k">)</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$$</span><span class="s2">item&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                        </span><span class="s2">&quot;</span><span class="k">$(</span>SSH_TARGET<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>SIMOTA_HOME<span class="k">)</span><span class="s2">/</span><span class="nv">$$</span><span class="s2">item&quot;</span><span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="k">done</span>
+
+<span class="nf">dry-run-deploy-ota-files</span><span class="o">:</span>
+<span class="w">        </span><span class="k">$(</span>MAKE<span class="k">)</span><span class="w"> </span>deploy-ota-files<span class="w"> </span><span class="nv">EXTRA_RSYNC_ARGS</span><span class="o">=</span><span class="s2">&quot;--dry-run&quot;</span>
+</code></pre></div>
+
+<p>One rsync per listed item, and one filter excluding the platform's own bytecode caches and automatic backups. The dry run is the same target with one argument added (<code>--dry-run</code>), so what it reports is what the real run will do. A new file is deployed because it sits in the tree under a listed path — and only for that reason.</p>
+<p>The harder half of that problem was built a year later by a colleague, on top of these targets: detect that the server holds changes the repository lacks, and open a pull request with the server's version before any deployment may proceed. Two-way sync with a web interface is a different problem from deployment (the GUI is a second author, and it never opens a PR), and it deserved its own workflow.</p>
+<h2>The documentation image, and what the old agent was hiding</h2>
+<p>The EPC repository publishes an architecture and runbook site — mkdocs, diagrams rendered through a local service, the result baked into a container. In February 2026 its four-line <code>Jenkinsfile</code> became a fifteen-line workflow calling the shared image build. The migration looked finished.</p>
+<p>Three more commits landed the same day, all in the <code>Makefile</code>, and between them they fixed four things:</p>
+<ul>
+<li><code>python3 -m venv .env</code> failed on the runner, because the Jenkins agent had the venv package and the runner did not.</li>
+<li>The package name needed pinning to the runner's interpreter (<code>python3.12-venv</code>, not the generic <code>python3-venv</code>).</li>
+<li>Installing it needed <code>sudo</code>, and the install was then made non-fatal (<code>|| true</code>) so a host that already has it still builds.</li>
+<li><code>pip install -r requirements.txt</code> became <code>.env/bin/pip</code>, since the system pip was no longer the one inside the virtual environment.</li>
+</ul>
+<p>None of those four is interesting on its own. Together they are the real cost of a CI migration. The pipeline file is mechanical; every assumption the old agent satisfied silently has to be found by failing, one commit at a time.</p></div>
           <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer>
         </article>
       </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en"> <head> <title>Building Production-Grade Monitoring: Lessons from Managing Enterprise Prometheus Infrastructure — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
+<html lang="en"> <head> <title>Federating another Prometheus: honor_labels and a timeout that would not load — Jagannath Subramanya</title> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" /> <link rel="stylesheet" href="../assets/css/main.css" /> <link rel="stylesheet" href="../assets/css/codehilite.css" />     <script>(function(){
 var D=document.documentElement;
 try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')D.setAttribute('data-theme',t);}catch(e){}
 function cur(){var a=D.getAttribute('data-theme');if(a)return a;
@@ -18,129 +18,46 @@ sync();
 b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';
 D.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(e){}sync();});
 host.appendChild(b);});})();</script>
-  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Building Production-Grade Monitoring: Lessons from Managing Enterprise Prometheus Infrastructure</h2><p>In today&#x27;s cloud-native landscape, observability isn&#x27;t just a nice-to-have—it&#x27;s mission-critical. Over the past year, I&#x27;ve had the opportunity to work extensively with Prometheus infrastructure at scale, managing monitoring solutions across multiple datacenters and environments. This experience has taught me valuable lessons about building resilient, scalable monitoring systems that can handle real-world production demands.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown"><h1>Building Production-Grade Monitoring: Lessons from Managing Enterprise Prometheus Infrastructure</h1>
-<h2>Introduction</h2>
-<p>In today's cloud-native landscape, observability isn't just a nice-to-have—it's mission-critical. Over the past year, I've had the opportunity to work extensively with Prometheus infrastructure at scale, managing monitoring solutions across multiple datacenters and environments. This experience has taught me valuable lessons about building resilient, scalable monitoring systems that can handle real-world production demands.</p>
-<h2>The Challenge: Multi-Datacenter Monitoring at Scale</h2>
-<p>Modern distributed systems present unique monitoring challenges. When you're managing services across multiple datacenters (SITE-A, SITE-B), with both development and production environments, traditional monitoring approaches quickly break down. The key challenges I encountered were:</p>
-<h3>1. <strong>Service Discovery Complexity</strong></h3>
-<p>Managing static configurations becomes unsustainable when dealing with dynamic infrastructure. Services come and go, endpoints change, and manual configuration updates become a bottleneck.</p>
-<h3>2. <strong>Metrics Volume and Performance</strong></h3>
-<p>As we expanded monitoring coverage, we needed to optimize scrape intervals and timeouts carefully. A poorly configured scrape job can overwhelm both the monitoring system and the targets being monitored.</p>
-<h3>3. <strong>Label Management and Metric Organization</strong></h3>
-<p>Without proper label strategies, metrics become difficult to query and correlate across services and environments.</p>
-<h2>Real-World Solutions: What I Learned</h2>
-<h3>Optimizing Scrape Configurations</h3>
-<p>One of the most impactful improvements I implemented was optimizing scrape configurations for the Partner D metrics expansion. Here's what worked:</p>
-<div class="codehilite"><pre><span></span><code><span class="c1"># Optimized scrape configuration</span>
-<span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
-<span class="nt">scrape_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
-<span class="nt">honor_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div> <p><strong>Key Insights:</strong>
-- <strong>1-minute intervals</strong> provided the right balance between granularity and performance
-- <strong>honor_labels: true</strong> was crucial for proper label replacement when federating metrics
-- <strong>Matching scrape_timeout to scrape_interval</strong> prevented timeout issues under load</p>
-<h3>Strategic Service Integration</h3>
-<p>When integrating new services like Hydeco into our monitoring ecosystem, I learned that gradual rollouts work best:</p>
-<ol>
-<li><strong>Start with basic health checks</strong> - Ensure the service is reachable</li>
-<li><strong>Add core business metrics</strong> - Focus on what matters most to stakeholders </li>
-<li><strong>Expand to detailed telemetry</strong> - Add comprehensive metrics once the foundation is solid</li>
-<li><strong>Document everything</strong> - Maintain clear changelog entries for future reference</li>
-</ol>
-<h3>Multi-Environment Deployment Strategy</h3>
-<p>Managing configurations across development and production environments taught me the importance of:</p>
-<ul>
-<li><strong>Template-driven configurations</strong> using Go templates for consistency</li>
-<li><strong>Environment-specific overrides</strong> that don't duplicate common configuration</li>
-<li><strong>Centralized configuration management</strong> through the <code>common/</code> directory structure</li>
-</ul>
-<h2>Technical Deep Dive: Prometheus at Scale</h2>
-<h3>Scrape Target Management</h3>
-<div class="codehilite"><pre><span></span><code><span class="nt">prometheus</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">prometheusSpec</span><span class="p">:</span>
-<span class="w"> </span><span class="nt">additionalScrapeConfigs</span><span class="p">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;partner-d-federate&#39;</span>
-<span class="w"> </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/federate</span>
-<span class="w"> </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
-<span class="w"> </span><span class="nt">scrape_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
-<span class="w"> </span><span class="nt">honor_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w"> </span><span class="nt">params</span><span class="p">:</span>
-<span class="w"> </span><span class="s">&#39;match[]&#39;</span><span class="p p-Indicator">:</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{__name__=~&quot;job:.*&quot;}&#39;</span>
-<span class="w"> </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{__name__=~&quot;up&quot;}&#39;</span>
-</code></pre></div> <p>This configuration pattern enabled us to:
-- <strong>Federate metrics</strong> from distributed Prometheus collectors
-- <strong>Preserve original labels</strong> through honor_labels
-- <strong>Filter metrics</strong> efficiently using match parameters
-- <strong>Scale horizontally</strong> by distributing collection load</p>
-<h3>Performance Optimization Lessons</h3>
-<p>Through real-world performance tuning, I discovered:</p>
-<ol>
-<li><strong>Scrape interval optimization</strong> - 1-minute intervals work well for most business metrics</li>
-<li><strong>Timeout configuration</strong> - Always set scrape_timeout less than or equal to scrape_interval</li>
-<li><strong>Target discovery</strong> - Use service discovery over static configs wherever possible</li>
-<li><strong>Metric filtering</strong> - Filter at collection time, not query time</li>
-</ol>
-<h2>Impact and Business Value</h2>
-<p>The monitoring improvements I implemented delivered measurable business value:</p>
-<h3>Enhanced Incident Response</h3>
-<ul>
-<li><strong>Faster MTTR</strong> through comprehensive service visibility</li>
-<li><strong>Proactive alerting</strong> catching issues before they impact customers</li>
-<li><strong>Better root cause analysis</strong> with detailed metrics correlation</li>
-</ul>
-<h3>Operational Efficiency</h3>
-<ul>
-<li><strong>Reduced manual configuration</strong> through automation and templates</li>
-<li><strong>Standardized monitoring patterns</strong> across all services</li>
-<li><strong>Simplified troubleshooting</strong> with consistent metric labeling</li>
-</ul>
-<h3>Scalability Improvements</h3>
-<ul>
-<li><strong>Multi-datacenter support</strong> with federated metrics collection</li>
-<li><strong>Environment isolation</strong> while maintaining configuration consistency</li>
-<li><strong>Performance optimization</strong> handling increased metrics volume</li>
-</ul>
-<h2>Best Practices for Production Monitoring</h2>
-<p>Based on this experience, here are my key recommendations:</p>
-<h3>1. <strong>Design for Scale from Day One</strong></h3>
-<ul>
-<li>Use templated configurations</li>
-<li>Plan for multi-environment deployments</li>
-<li>Implement proper label strategies early</li>
-</ul>
-<h3>2. <strong>Optimize Performance Continuously</strong></h3>
-<ul>
-<li>Monitor your monitoring system's resource usage</li>
-<li>Tune scrape intervals based on actual needs</li>
-<li>Use metric filtering to reduce noise</li>
-</ul>
-<h3>3. <strong>Maintain Configuration as Code</strong></h3>
-<ul>
-<li>Version control all monitoring configurations</li>
-<li>Use pull requests for changes</li>
-<li>Maintain comprehensive changelogs</li>
-</ul>
-<h3>4. <strong>Focus on Business Impact</strong></h3>
-<ul>
-<li>Prioritize metrics that matter to stakeholders</li>
-<li>Implement SLI/SLO-based monitoring</li>
-<li>Connect metrics to business outcomes</li>
-</ul>
-<h2>Looking Forward: The Future of Observability</h2>
-<p>The monitoring landscape continues to evolve rapidly. Some trends I'm watching:</p>
-<ul>
-<li><strong>OpenTelemetry adoption</strong> for unified observability</li>
-<li><strong>AI-powered anomaly detection</strong> for smarter alerting</li>
-<li><strong>Cost optimization</strong> as metrics volumes continue growing</li>
-<li><strong>Edge monitoring</strong> as applications distribute further</li>
-</ul>
-<h2>Conclusion</h2>
-<p>Building production-grade monitoring infrastructure is both challenging and rewarding. The key is to start with solid fundamentals—proper configuration management, thoughtful performance optimization, and a focus on business value. The lessons learned from managing Prometheus at scale have made me a better engineer and given me deep appreciation for the complexity of modern observability.</p>
-<p>Every metric collected should serve a purpose, every alert should be actionable, and every configuration change should move you closer to better system understanding. When you get it right, monitoring becomes not just a safety net, but a competitive advantage.</p>
-<hr />
-<p><em>Have you faced similar challenges with monitoring at scale? I'd love to hear about your experiences and lessons learned. Connect with me to discuss observability strategies and best practices.</em></p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
+  </head> <body class="single is-preload"> <div id="wrapper"> <header id="header"> <h1><a href="../index.html">Jagannath Subramanya</a></h1> <nav class="links"></nav> </header> <div id="main"> <article class="post"> <header> <div class="title"><h2>Federating another Prometheus: honor_labels and a timeout that would not load</h2><p>One scrape job, three commits in an afternoon, and the two settings that decide whether federated samples keep their own identity.</p></div> <div class="meta"><span class="published">Monitoring</span></div> </header> <div class="content markdown">
+<p>One scrape job, three commits in an afternoon, and the two settings that decide whether federated samples keep their own identity.</p>
+<h2>The job</h2>
+<p>Partner D ran its own Prometheus collectors. The agent-based collection alongside them was meant to be retired once the dashboards and alerts moved across. The replacement is a plain <code>/federate</code> scrape against four collector addresses (port 9090, static targets, no service discovery), added to one production cluster's scrape config:</p>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">job_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;partner-d_federate&#39;</span>
+<span class="w">  </span><span class="nt">honor_labels</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">metrics_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/federate&#39;</span>
+<span class="w">  </span><span class="nt">scrape_interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
+<span class="w">  </span><span class="nt">scrape_timeout</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1m</span>
+<span class="w">  </span><span class="nt">params</span><span class="p">:</span>
+<span class="w">    </span><span class="s">&#39;match[]&#39;</span><span class="p p-Indicator">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{__name__=~&quot;.+&quot;}&#39;</span>
+<span class="w">  </span><span class="nt">static_configs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">targets</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">172.22.144.22:9090</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">172.22.8.103:9090</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">172.22.16.103:9090</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">172.22.48.10:9090</span>
+<span class="w">  </span><span class="nt">relabel_configs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">source_labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">job</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">target_label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secondary_job</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">target_label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">job</span>
+<span class="w">      </span><span class="nt">replacement</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">partner-d_federate</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">source_labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">instance</span><span class="p p-Indicator">]</span>
+<span class="w">      </span><span class="nt">target_label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secondary_instance</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">target_label</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">instance</span>
+<span class="w">      </span><span class="nt">replacement</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">partner-d_federate_instance</span>
+</code></pre></div>
+
+<p>Nothing there is clever. The three lines that changed after the first commit are the whole story.</p>
+<h2>The timeout that would not load</h2>
+<p>It went in as <code>scrape_interval: 30s</code> with <code>scrape_timeout: 2m</code> — a pair Prometheus refuses, because a timeout longer than its own interval fails validation at parse time. The failure is the whole file (every job in it), not the one job that is wrong. A second commit the same afternoon pulled the timeout back to 30s; a third moved both to 1m.</p>
+<p>A <code>match[]</code> of <code>{__name__=~".+"}</code> asks each collector for everything it holds (every series, every job) — no name filter at all. The parent then carries a full copy of four collectors' series every cycle, and 30 seconds is a thin budget for that. One minute (both interval and timeout) is the number that stayed.</p>
+<h2>What honor_labels actually decides</h2>
+<p>The default (<code>false</code>) means the target's labels win a collision. A scraped sample carrying its own <code>job</code> and <code>instance</code> has them renamed to <code>exported_job</code> and <code>exported_instance</code>, and the target's values are written in their place. For an ordinary exporter that is correct; the exporter has no opinion about which job it belongs to. For a federate scrape it destroys the thing being federated — every series pulled from all four collectors arrives wearing <code>job="partner-d_federate"</code>, and the real job survives only under a prefix (<code>exported_</code>) that no existing dashboard query mentions.</p>
+<p>Setting it to <code>true</code> reverses the precedence. The sample's own labels win, the colliding target labels are dropped, and a federated series arrives looking the way it looked on the collector that produced it. The commit subject says what it is for in four words: proper label replacement.</p>
+<h2>The half that misses</h2>
+<p>The <code>relabel_configs</code> were meant to park the target identity under names that cannot collide, so you could still tell which of the four collectors answered. <code>secondary_job</code> carries a value, though a useless one (the job name, which the next rule was about to set to the same string). <code>secondary_instance</code> carries nothing — <code>instance</code> is absent from a target during relabelling (it is filled in from <code>__address__</code> afterwards), so <code>source_labels: [instance]</code> reads an empty string, and an empty label is dropped. Reading <code>__address__</code> is the way to carry a collector address through; this job reads the wrong one.</p>
+<h2>What it cost</h2>
+<p>Three commits on 30 April 2025 in one pull request, plus a one-line target addition the previous December (one address, one line) and a separate single-target job in July (one VM, port 19100). The repository was marked deprecated in May 2026 and every production overlay removed (nine removal commits in a single day), so the job outlived neither the plan it belonged to nor the repository it lived in.</p></div> <footer><ul class="stats"><li><a href="../index.html">Back to posts</a></li></ul></footer> </article> </div> <section id="sidebar"> <section> <div class="mini-posts"> <header><h3>Recent</h3></header> <ul>
 <li><a href="../posts/project--kubernetes-deployment-blog.html">Scaling Telecommunications Infrastructure: A Journey Through Kubernetes Deployments in Wireless Networks</a> <span class=\"published\">Containers</span></li>
 <li><a href="../posts/project--network-monitoring-blog.html">Building Robust Network Monitoring for Telecommunications: A CloudProber Journey</a> <span class=\"published\">Monitoring</span></li>
 <li><a href="../posts/project--telecommunications-security-blog.html">Securing Critical Telecommunications Infrastructure: A Defense-in-Depth Approach</a> <span class=\"published\">Telecom</span></li>
